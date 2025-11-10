@@ -333,9 +333,19 @@
                 <input type="hidden" id="dataAktualizacji" name="dataAktualizacji">
             </div>
 
+            <!-- ZMIANA: Dodano przycisk '+' do skanowania powiązanych EANów -->
             <div class="form-grupa">
                 <label for="powiazane">Produkty powiązane (EANy)</label>
-                <input type="text" id="powiazane" name="powiazane" placeholder="Wpisz EANy po przecinku...">
+                <div class="ean-grupa" style="align-items: stretch;">
+                    <input type="text" id="powiazane" name="powiazane" placeholder="Wpisz EANy po przecinku...">
+                    <button type="button" id="przycisk-skanuj-powiazany" class="przycisk" style="background-color: #17a2b8; color: white; padding: 0 1rem; font-size: 1.5rem; line-height: 1;">+</button>
+                </div>
+            </div>
+            
+            <!-- NOWE POLE: Warianty -->
+            <div class="form-grupa">
+                <label for="warianty">Warianty (np. smaki, kolory)</label>
+                <input type="text" id="warianty" name="warianty" placeholder="np. Czekoladowy, Waniliowy, Czerwony">
             </div>
             
             <!-- Ukryte pole opisu, jeśli go potrzebujesz (było w kodzie) -->
@@ -400,21 +410,25 @@
             // NOWE ELEMENTY (NAPRAWIONE - DODANO BRAKUJĄCE DEFINICJE)
             const nazwaInput = document.getElementById('nazwa');
             const dataAktualizacjiDisplay = document.getElementById('dataAktualizacjiDisplay');
+            // NOWY PRZYCISK
+            const btnSkanujPowiazany = document.getElementById('przycisk-skanuj-powiazany');
 
             // --- STAN SKANERA (dla stabilizacji) ---
             let ostatnioZeskanowanyEAN = null;
             let licznikPoprawnychOdczytow = 0;
             const WYMAGANY_COUNT = 3; 
+            // NOWY STAN: śledzi, który skaner jest aktywny
+            let skanerAktywny = 'glowny'; // 'glowny' lub 'powiazany'
 
             // --- GŁÓWNA BAZA DANYCH ---
             let bazaProduktow = [];
             const KLUCZ_BAZY = 'mojaBazaProduktowEAN';
             
-            // ZMIANA: Poprawiona kolejność KOLUMNY_CSV
+            // ZMIANA: Poprawiona kolejność KOLUMNY_CSV (dodano 'warianty')
             const KOLUMNY_CSV = [
                 'ean', 'nazwa', 'opis', 'sklep', 'marka', 'producent', 'pogrupowanie', 
                 'gramatura', 'rodzajGramatury', 'cena', 'cenaPromo', 
-                'dataAktualizacji', 'powiazane'
+                'dataAktualizacji', 'warianty', 'powiazane'
             ];
             
             const zaladujBaze = () => {
@@ -464,6 +478,8 @@
                 opisInput.value = produkt.opis || '';
                 // ZMIANA: Wypełnienie pola daty
                 dataAktualizacjiDisplay.value = produkt.dataAktualizacji || 'Brak';
+                // Wypełnienie nowego pola
+                document.getElementById('warianty').value = produkt.warianty || '';
             };
 
             // ZMIANA: Usunięto automatyczne ustawianie daty z tej funkcji
@@ -477,6 +493,7 @@
                 return produkt;
             };
 
+            // ZMIANA: Wyszukiwanie obejmuje teraz EANy powiązane
             const wyszukajLubWyczysc = () => {
                 const ean = eanInput.value.trim();
                 
@@ -485,16 +502,35 @@
                     return;
                 }
                 
-                const znalezionyProdukt = bazaProduktow.find(p => p.ean === ean);
+                // Krok 1: Szukaj po EAN głównym (najszybsze)
+                let znalezionyProdukt = bazaProduktow.find(p => p.ean === ean);
+                
+                if (!znalezionyProdukt) {
+                    // Krok 2: Szukaj po EANach powiązanych
+                    znalezionyProdukt = bazaProduktow.find(p => {
+                        if (!p.powiazane) return false;
+                        // Tworzymy tablicę z powiązanych EANów
+                        const powiazaneEANy = p.powiazane.split(',').map(e => e.trim());
+                        return powiazaneEANy.includes(ean);
+                    });
+                }
                 
                 if (znalezionyProdukt) {
+                    // ZAWSZE ładuj główny produkt
                     wypelnijFormularz(znalezionyProdukt);
-                    pokazKomunikat(`Załadowano produkt: ${znalezionyProdukt.nazwa}`);
+                    
+                    if (znalezionyProdukt.ean !== ean) {
+                         // Znaleziono w powiązanych, poinformuj o tym
+                         pokazKomunikat(`Znaleziono EAN powiązany. Załadowano główny produkt: ${znalezionyProdukt.nazwa}`, 'info');
+                    } else {
+                         // Znaleziono główny
+                         pokazKomunikat(`Załadowano produkt: ${znalezionyProdukt.nazwa}`);
+                    }
                 } else {
                     const wpisanyEAN = eanInput.value;
                     wyczyscFormularz();
                     eanInput.value = wpisanyEAN;
-                    pokazKomunikat('Nowy produkt. Wypełnij dane.', 'info');
+                    pokazKomunikat('Nowy produkt (EAN nieznaleziony). Wypełnij dane.', 'info');
                 }
             };
 
@@ -698,7 +734,9 @@
 
             // --- ZAAWANSOWANE FUNKCJE SKANERA KAMERY ---
 
-            const startSkaner = () => {
+            // ZMIANA: startSkaner akceptuje teraz typ (który przycisk go wywołał)
+            const startSkaner = (typ = 'glowny') => {
+                skanerAktywny = typ; // Ustaw tryb skanera
                 skanerKontener.classList.add('aktywny');
                 wynikSkanowaniaDiv.textContent = 'Ładowanie kamery...';
                 
@@ -765,6 +803,7 @@
                 }
             };
 
+            // ZMIANA: onDetected obsługuje teraz dwa tryby (główny i powiązany)
             const onDetected = (result) => {
                 const ean = result.codeResult.code;
                 
@@ -784,11 +823,23 @@
                 if (licznikPoprawnychOdczytow >= WYMAGANY_COUNT) {
                     stopSkaner(); 
                     
-                    eanInput.value = ean; 
-                    
-                    wyszukajLubWyczysc();
-                    
-                    pokazKomunikat(`Kod EAN zeskanowany: ${ean}`, 'sukces');
+                    if (skanerAktywny === 'glowny') {
+                        // Tryb główny: Wypełnij główne pole EAN i wyszukaj
+                        eanInput.value = ean; 
+                        wyszukajLubWyczysc();
+                        pokazKomunikat(`Kod EAN zeskanowany: ${ean}`, 'sukces');
+                    } else if (skanerAktywny === 'powiazany') {
+                        // Tryb powiązany: Dopisz EAN do pola 'powiazane'
+                        const powiazaneInput = document.getElementById('powiazane');
+                        const obecneEANy = powiazaneInput.value.trim();
+                        
+                        if (obecneEANy === '') {
+                            powiazaneInput.value = ean;
+                        } else {
+                            powiazaneInput.value = obecneEANy + `, ${ean}`;
+                        }
+                        pokazKomunikat(`Dodano powiązany EAN: ${ean}`, 'sukces');
+                    }
                     
                     window.scrollTo(0, 0);
                 }
@@ -833,11 +884,11 @@
             btnZapisz.addEventListener('click', zapiszProdukt);
             btnUsun.addEventListener('click', usunProdukt);
             btnEksport.addEventListener('click', eksportujCSV);
-            btnImport.addEventListener('click', importujCSV);
-            inputImport.addEventListener('change', obsluzImportPliku);
+            btnImport.addEventListener('change', obsluzImportPliku);
             
             // Podpięcie funkcji Skanera Kamery
-            btnSkanujAparat.addEventListener('click', startSkaner);
+            btnSkanujAparat.addEventListener('click', () => startSkaner('glowny')); // Przycisk główny
+            btnSkanujPowiazany.addEventListener('click', () => startSkaner('powiazany')); // Nowy przycisk '+'
             btnZamknijSkaner.addEventListener('click', stopSkaner);
             
             // NOWE: Podpięcie autouzupełniania gramatury
