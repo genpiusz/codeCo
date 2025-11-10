@@ -76,12 +76,16 @@
         }
         /* PRZYCISK APARATU */
         #przycisk-skanuj-aparat {
-            display: block; 
-            padding: 0.75rem 1rem;
-            background-color: #28a745; 
-            color: white;
+            padding: 0.6rem;
             border: none;
             border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            display: block;
+            background-color: orange;
+            border: none;
             cursor: pointer;
             font-weight: 600;
         }
@@ -94,7 +98,7 @@
             margin-top: 1.5rem;
         }
         .przycisk {
-            padding: 0.85rem;
+            padding: 0.6rem;
             border: none;
             border-radius: 4px;
             cursor: pointer;
@@ -115,8 +119,11 @@
         .przycisk-usun:hover { background-color: #c82333; }
 
         .przycisk-szukaj {
-            background-color: #ffc107;
-            color: #333;
+            display: block;
+            background-color: orange;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
         }
         .przycisk-szukaj:hover { background-color: #e0a800; }
         
@@ -257,59 +264,48 @@
 <body>
 
     <main class="kontener">
-        <h1>Baza Produktów EAN</h1>
-
         <form id="formularz-produktu" onsubmit="return false;">
 
             <!-- SEKCJA EAN -->
-            <label for="ean">EAN</label>
             <div class="ean-grupa">
                 <div class="form-grupa" style="margin-bottom: 0;">
                     <input type="text" id="ean" name="ean" placeholder="Wpisz lub zeskanuj kod EAN..." required>
                 </div>
                 <!-- Przycisk do uruchamiania kamery -->
-                <button type="button" id="przycisk-skanuj-aparat">📷 Skanuj</button>
+                <button type="button" id="przycisk-skanuj-aparat">📸</button>
+                <button type="button" id="przycisk-szukaj" class="przycisk przycisk-szukaj">🔎/❌</button>
             </div>
-            
-            <button type="button" id="przycisk-szukaj" class="przycisk przycisk-szukaj" style="width: 100%; margin-top: 0.5rem;">
-                Wyszukaj / Wyczyść
-            </button>
-
+           
             <hr>
 
             <!-- DANE PRODUKTU -->
-            <div class="form-grupa">
-                <label for="nazwa">Nazwa produktu</label>
-                <input type="text" id="nazwa" name="nazwa" placeholder="Mleko UHT 3,2%">
-            </div>
-            
-            <div class="form-grupa">
-                <label for="opis">Opis Produktu</label>
-                <textarea id="opis" name="opis" placeholder="Wprowadź szczegółowy opis produktu..." rows="4"></textarea>
-            </div>
-
             <div class="flex-grupa">
                 <div class="form-grupa">
                     <label for="sklep">Sklep</label>
-                    <input type="text" id="sklep" name="sklep" placeholder="Biedronka">
+                    <input type="text" id="sklep" name="sklep" placeholder="SKLE">
                 </div>
                 <div class="form-grupa">
                     <label for="marka">Marka</label>
-                    <input type="text" id="marka" name="marka" placeholder="Mleczna Dolina">
+                    <input type="text" id="marka" name="marka" placeholder="MARKA">
                 </div>
             </div>
 
             <div class="flex-grupa">
                 <div class="form-grupa">
-                    <label for="producent">Producent</label>
-                    <input type="text" id="producent" name="producent" placeholder="Mlekowita">
+                    <label for="cena">Cena (zł)</label>
+                    <input type="number" id="cena" name="cena" placeholder="1.99" step="0.01">
                 </div>
                 <div class="form-grupa">
-                    <label for="pogrupowanie">Pogrupowanie</label>
-                    <input type="text" id="pogrupowanie" name="pogrupowanie" placeholder="Mleko UHT">
+                    <label for="cenaPromo">Cena promo (zł)</label>
+                    <input type="number" id="cenaPromo" name="cenaPromo" placeholder="1.49" step="0.01">
                 </div>
             </div>
 
+            <div class="form-grupa">
+                <label for="nazwa">Nazwa produktu</label>
+                <input type="text" id="nazwa" name="nazwa" placeholder="Mleko UHT 3,2% 1L">
+            </div>
+            
             <div class="flex-grupa">
                 <div class="form-grupa">
                     <label for="gramatura">Gramatura</label>
@@ -329,14 +325,16 @@
 
             <div class="flex-grupa">
                 <div class="form-grupa">
-                    <label for="cena">Cena (zł)</label>
-                    <input type="number" id="cena" name="cena" placeholder="1.99" step="0.01">
+                    <label for="producent">Producent</label>
+                    <input type="text" id="producent" name="producent" placeholder="Mlekowita">
                 </div>
                 <div class="form-grupa">
-                    <label for="cenaPromo">Cena promo (zł)</label>
-                    <input type="number" id="cenaPromo" name="cenaPromo" placeholder="1.49" step="0.01">
+                    <label for="pogrupowanie">Pogrupowanie</label>
+                    <input type="text" id="pogrupowanie" name="pogrupowanie" placeholder="Mleko UHT">
                 </div>
             </div>
+
+
 
             <div class="form-grupa">
                 <label for="powiazane">Produkty powiązane (EANy)</label>
