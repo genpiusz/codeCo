@@ -74,9 +74,11 @@
         .ean-grupa > .form-grupa {
             flex-grow: 1; 
         }
-        /* PRZYCISK APARATU */
-        #przycisk-skanuj-aparat {
-            padding: 0.6rem;
+        
+        /* Style przycisków EAN (Skanuj i Szukaj) */
+        #przycisk-skanuj-aparat,
+        #przycisk-szukaj {
+            padding: 0.75rem; /* Ujednolicony padding */
             border: none;
             border-radius: 4px;
             cursor: pointer;
@@ -85,12 +87,15 @@
             transition: background-color 0.2s;
             display: block;
             background-color: orange;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
+            color: black;
+        }
+        #przycisk-skanuj-aparat:hover,
+        #przycisk-szukaj:hover {
+            background-color: #e0a800;
         }
 
-        /* Przyciski */
+
+        /* Przyciski Formularza */
         .przyciski-formularza {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -117,15 +122,6 @@
             color: white;
         }
         .przycisk-usun:hover { background-color: #c82333; }
-
-        .przycisk-szukaj {
-            display: block;
-            background-color: orange;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .przycisk-szukaj:hover { background-color: #e0a800; }
         
         hr {
             border: 0;
@@ -246,7 +242,6 @@
         .drawingBuffer:after {
             content: '';
             position: absolute;
-            /* Ustawienie paska w centrum (45% od góry) */
             top: 45%; 
             left: 5%; 
             width: 90%;
@@ -255,7 +250,6 @@
             border-radius: 5px;
             box-sizing: border-box;
             pointer-events: none;
-            /* Dodatkowa animacja subtelnie miga, gdy widzimy kod */
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.5); 
         }
 
@@ -269,18 +263,18 @@
             <!-- SEKCJA EAN -->
             <div class="ean-grupa">
                 <div class="form-grupa" style="margin-bottom: 0;">
-                    <input type="number" id="ean" name="ean" placeholder="Wpisz lub zeskanuj kod EAN..." required>
+                    <!-- ZMIANA: type="text" z inputmode="numeric" dla EANów zaczynających się od 0 -->
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" id="ean" name="ean" placeholder="Wpisz lub zeskanuj kod EAN..." required>
                 </div>
-                <!-- Przycisk do uruchamiania kamery -->
                 <button type="button" id="przycisk-skanuj-aparat">📸</button>
-                <button type="button" id="przycisk-szukaj" class="przycisk przycisk-szukaj">🔎</button>
+                <button type="button" id="przycisk-szukaj" class="przycisk">🔎</button>
             </div>
-           
+            
             <!-- DANE PRODUKTU -->
             <div class="flex-grupa">
                 <div class="form-grupa">
                     <label for="sklep"></label>
-                    <input type="text" id="sklep" name="sklep" placeholder="SKLE">
+                    <input type="text" id="sklep" name="sklep" placeholder="SKLEP">
                 </div>
                 <div class="form-grupa">
                     <label for="marka"></label>
@@ -300,13 +294,14 @@
             </div>
             <div class="form-grupa">
                 <label for="nazwa"></label>
+                <!-- ZMIANA: Pole nazwa będzie teraz automatycznie uzupełniać gramaturę -->
                 <input type="text" id="nazwa" name="nazwa" placeholder="Mleko UHT 3,2% 1L">
             </div>
             
             <div class="flex-grupa">
                 <div class="form-grupa">
                     <label for="gramatura"></label>
-                    <input type="number" id="gramatura" name="gramatura" placeholder="500" step="any">
+                    <input type="number" id="gramatura" name="gramatura" placeholder="1" step="any">
                 </div>
                 <div class="form-grupa">
                     <label for="rodzajGramatury"></label>
@@ -331,15 +326,21 @@
                 </div>
             </div>
 
-
+            <!-- NOWE POLE: Data Aktualizacji Ceny -->
+            <div class="form-grupa">
+                <label for="dataAktualizacjiDisplay">Data ost. zmiany ceny</label>
+                <input type="text" id="dataAktualizacjiDisplay" disabled style="background-color: #f0f0f0;">
+                <input type="hidden" id="dataAktualizacji" name="dataAktualizacji">
+            </div>
 
             <div class="form-grupa">
                 <label for="powiazane">Produkty powiązane (EANy)</label>
                 <input type="text" id="powiazane" name="powiazane" placeholder="Wpisz EANy po przecinku...">
             </div>
             
-            <input type="hidden" id="dataAktualizacji" name="dataAktualizacji">
-            
+            <!-- Ukryte pole opisu, jeśli go potrzebujesz (było w kodzie) -->
+            <textarea id="opis" name="opis" style="display:none;"></textarea>
+
             <div id="komunikat"></div>
 
             <div class="przyciski-formularza">
@@ -368,13 +369,8 @@
 
     <!-- KONTENER SKANERA (pełnoekranowy) -->
     <div id="skaner-kontener">
-        <!-- Przycisk do zamknięcia okna skanowania -->
         <button id="przycisk-zamknij-skaner">X Zamknij</button>
-        
-        <!-- Miejsce na wyświetlanie strumienia wideo z kamery -->
         <div id="interactive" class="viewport"></div>
-        
-        <!-- Tutaj będzie wyświetlany odczytany EAN -->
         <div id="wynik-skanowania">Gotowy do skanowania...</div>
     </div>
 
@@ -400,19 +396,25 @@
             const btnZamknijSkaner = document.getElementById('przycisk-zamknij-skaner');
             const wynikSkanowaniaDiv = document.getElementById('wynik-skanowania');
             const opisInput = document.getElementById('opis'); 
+            
+            // NOWE ELEMENTY
+            const nazwaInput = document.getElementById('nazwa');
+            const dataAktualizacjiDisplay = document.getElementById('dataAktualizacjiDisplay');
 
             // --- STAN SKANERA (dla stabilizacji) ---
             let ostatnioZeskanowanyEAN = null;
             let licznikPoprawnychOdczytow = 0;
-            const WYMAGANY_COUNT = 3; // Liczba odczytów, aby uznać kod za pewny
+            const WYMAGANY_COUNT = 3; 
 
             // --- GŁÓWNA BAZA DANYCH ---
             let bazaProduktow = [];
             const KLUCZ_BAZY = 'mojaBazaProduktowEAN';
+            
+            // ZMIANA: Poprawiona kolejność KOLUMNY_CSV
             const KOLUMNY_CSV = [
                 'ean', 'nazwa', 'opis', 'sklep', 'marka', 'producent', 'pogrupowanie', 
-                'gramatura', 'rodzajGramatury', 'cena', 'cenaPromo', 'powiazane', 
-                'dataAktualizacji'
+                'gramatura', 'rodzajGramatury', 'cena', 'cenaPromo', 
+                'dataAktualizacji', 'powiazane'
             ];
             
             const zaladujBaze = () => {
@@ -447,6 +449,8 @@
             const wyczyscFormularz = () => {
                 formularz.reset();
                 eanInput.focus();
+                // ZMIANA: Czyszczenie pola daty
+                dataAktualizacjiDisplay.value = '';
             };
             
             const wypelnijFormularz = (produkt) => {
@@ -457,9 +461,12 @@
                         pole.value = produkt[klucz];
                     }
                 }
-                 opisInput.value = produkt.opis || '';
+                opisInput.value = produkt.opis || '';
+                // ZMIANA: Wypełnienie pola daty
+                dataAktualizacjiDisplay.value = produkt.dataAktualizacji || 'Brak';
             };
 
+            // ZMIANA: Usunięto automatyczne ustawianie daty z tej funkcji
             const pobierzDaneZFormularza = () => {
                 const formData = new FormData(formularz);
                 const produkt = {};
@@ -467,8 +474,6 @@
                     produkt[klucz] = wartosc;
                 }
                 produkt.opis = opisInput.value; 
-
-                produkt.dataAktualizacji = new Date().toISOString().split('T')[0];
                 return produkt;
             };
 
@@ -493,6 +498,7 @@
                 }
             };
 
+            // ZMIANA: Logika zapisu daty aktualizacji
             const zapiszProdukt = () => {
                 const ean = eanInput.value.trim();
                 if (!ean) {
@@ -503,17 +509,34 @@
                 
                 const daneProduktu = pobierzDaneZFormularza();
                 const indeksProduktu = bazaProduktow.findIndex(p => p.ean === ean);
+                const dzisiejszaData = new Date().toISOString().split('T')[0];
                 
                 if (indeksProduktu > -1) {
+                    // --- AKTUALIZACJA ---
+                    const staryProdukt = bazaProduktow[indeksProduktu];
+                    
+                    // Sprawdź, czy cena (lub cena promo) się zmieniła
+                    if (String(staryProdukt.cena) !== String(daneProduktu.cena) || String(staryProdukt.cenaPromo) !== String(daneProduktu.cenaPromo)) {
+                        daneProduktu.dataAktualizacji = dzisiejszaData;
+                        pokazKomunikat('Produkt zaktualizowany (nowa data ceny)!', 'sukces');
+                    } else {
+                        // Cena się nie zmieniła, zachowaj starą datę
+                        daneProduktu.dataAktualizacji = staryProdukt.dataAktualizacji || dzisiejszaData; // Użyj starej daty, lub dzisiejszej jeśli stara nie istnieje
+                        pokazKomunikat('Produkt zaktualizowany (cena bez zmian).', 'sukces');
+                    }
                     bazaProduktow[indeksProduktu] = daneProduktu;
-                    pokazKomunikat('Produkt zaktualizowany!', 'sukces');
+                    
                 } else {
+                    // --- NOWY PRODUKT ---
+                    daneProduktu.dataAktualizacji = dzisiejszaData;
                     bazaProduktow.push(daneProduktu);
                     pokazKomunikat('Produkt dodany do bazy!', 'sukces');
                 }
                 
                 zapiszBaze();
                 wyswietlListe();
+                // Aktualizuj pole display po zapisie
+                dataAktualizacjiDisplay.value = daneProduktu.dataAktualizacji;
             };
 
             const usunProdukt = () => {
@@ -526,7 +549,7 @@
                 const indeksProduktu = bazaProduktow.findIndex(p => p.ean === ean);
                 
                 if (indeksProduktu > -1) {
-                    // Własna, prosta alternatywa dla window.confirm
+                    // Używamy prostego confirm() z kodu użytkownika
                     if (confirm('Czy na pewno chcesz usunąć ten produkt?')) { 
                         bazaProduktow.splice(indeksProduktu, 1);
                         zapiszBaze();
@@ -606,7 +629,6 @@
                 const plik = event.target.files[0];
                 if (!plik) return;
                 
-                // Użycie window.confirm jako prosta alternatywa (zgodnie z poprzednim kodem)
                 if (!confirm('Czy na pewno chcesz importować? Spowoduje to całkowite nadpisanie (utratę) WSZYSTKICH obecnych danych w bazie.')) {
                     event.target.value = '';
                     return;
@@ -639,7 +661,15 @@
                     throw new Error('Plik CSV jest pusty.');
                 }
                 
+                // Używamy zdefiniowanych KOLUMN CSV jako nagłówków
                 const naglowkiDoUzycia = KOLUMNY_CSV; 
+                
+                // Sprawdzenie nagłówków pliku (opcjonalne, ale dobre)
+                const naglowkiWPliku = linie[0].split(',').map(h => h.trim().replace(/"/g, ''));
+                if(naglowkiWPliku[0] !== 'ean') {
+                    console.warn("Plik CSV może nie mieć poprawnych nagłówków, próba importu...");
+                }
+
                 const nowaBaza = [];
 
                 for (let i = 1; i < linie.length; i++) {
@@ -649,6 +679,7 @@
                     
                     const produkt = {};
                     for (let j = 0; j < naglowkiDoUzycia.length; j++) {
+                        // Używamy naszej zdefiniowanej kolejności kolumn
                         produkt[naglowkiDoUzycia[j]] = wartosci[j];
                     }
                     
@@ -671,48 +702,33 @@
                 skanerKontener.classList.add('aktywny');
                 wynikSkanowaniaDiv.textContent = 'Ładowanie kamery...';
                 
-                // Resetowanie stanu stabilizacji
                 ostatnioZeskanowanyEAN = null;
                 licznikPoprawnychOdczytow = 0;
 
-                // Ustawienia regionu zainteresowania (ROI) dla paska centralnego
                 const inputStreamConfig = {
                     name: "Live",
                     type: "LiveStream",
                     target: document.querySelector('#interactive'), 
                     constraints: {
                         facingMode: "environment", 
-                        // Wymuszanie wysokiej rozdzielczości (jeśli dostępna)
                         width: { min: 1280 }, 
                         height: { min: 720 },
-                        // Opcjonalnie: wyłączenie lampy błyskowej (jeśli jest auto)
-                        // torch: false, 
                     },
-                    // Ustawienie strefy skanowania (ROI) na centralny poziomy pasek
-                    area: { // Region of interest
-                        top: "40%",
-                        right: "10%",
-                        left: "10%",
-                        bottom: "40%"
-                    }
+                    area: { top: "40%", right: "10%", left: "10%", bottom: "40%" }
                 };
 
-                // KONFIGURACJA QUAGGAJS
                 Quagga.init({
                     inputStream: inputStreamConfig,
                     locator: {
                         patchSize: "large", 
                         halfSample: true,
-                        // Dalsze zawężenie obszaru detekcji na środku
                         locate: true,
-                        // Usunięto target: document.querySelector('#interactive') aby uniknąć DataCloneError
                     },
                     decoder: {
                         readers: ["ean_reader", "ean_8_reader", "upc_reader", "upc_e_reader"],
                         multiple: false 
                     },
-                    frequency: 10, // Więcej prób na sekundę
-                    // Zmiana: Wyłączenie web workers, aby naprawić błąd DataCloneError
+                    frequency: 10, 
                     numOfWorkers: 0, 
                 }, function (err) {
                     if (err) {
@@ -738,7 +754,6 @@
                 wynikSkanowaniaDiv.textContent = 'Gotowy do skanowania...';
             };
 
-            // Rysowanie ramki wokół wykrytego kodu
             const onProcessed = (result) => {
                 var drawingCtx = Quagga.canvas.ctx.overlay,
                     drawingCanvas = Quagga.canvas.dom.overlay;
@@ -746,32 +761,26 @@
                 drawingCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
 
                 if (result && result.box) {
-                    // Rysowanie ramki wokół wykrytego obszaru
                     Quagga.ImageDebug.drawPath(result.box, {x: 0, y: 1}, drawingCtx, {color: "yellow", lineWidth: 2});
                 }
             };
 
-            // Funkcja z zaawansowaną stabilizacją
             const onDetected = (result) => {
                 const ean = result.codeResult.code;
                 
-                // Sprawdzenie poprawności formatu EAN
                 if (!ean || !(ean.length === 13 || ean.length === 8 || ean.length === 12)) {
-                    return; // Ignoruj kody o niewłaściwej długości
+                    return; 
                 }
                 
-                // 1. Stabilizacja: jeśli to ten sam kod, zwiększ licznik
                 if (ean === ostatnioZeskanowanyEAN) {
                     licznikPoprawnychOdczytow++;
                     wynikSkanowaniaDiv.textContent = `Wykryto: ${ean} (Stabilizacja: ${licznikPoprawnychOdczytow}/${WYMAGANY_COUNT})`;
                 } else {
-                    // Jeśli to nowy kod, resetuj i zacznij liczyć
                     ostatnioZeskanowanyEAN = ean;
                     licznikPoprawnychOdczytow = 1;
                     wynikSkanowaniaDiv.textContent = `Wykryto: ${ean} (Stabilizacja: 1/${WYMAGANY_COUNT})`;
                 }
 
-                // 2. Warunek Sukcesu: Jeśli osiągnięto wymaganą liczbę odczytów
                 if (licznikPoprawnychOdczytow >= WYMAGANY_COUNT) {
                     stopSkaner(); 
                     
@@ -782,6 +791,37 @@
                     pokazKomunikat(`Kod EAN zeskanowany: ${ean}`, 'sukces');
                     
                     window.scrollTo(0, 0);
+                }
+            };
+            
+            // --- NOWA FUNKCJA: AUTOUZUPEŁNIANIE GRAMATURY ---
+            const autoUzupelnijGramature = () => {
+                const nazwa = nazwaInput.value;
+                const gramaturaInput = document.getElementById('gramatura');
+                const rodzajGramaturySelect = document.getElementById('rodzajGramatury');
+
+                // Regex 1: Szuka wartości typu "1.5L", "300ml", "75g" (z kropką lub przecinkiem)
+                const regexGram = /(\d+[\.,]?\d*)\s*(g|ml|kg|l)\.?\s*$/i;
+                // Regex 2: Szuka wartości typu "2szt"
+                const regexSzt = /(\d+)\s*(szt)\.?\s*$/i;
+                
+                const matchGram = nazwa.match(regexGram);
+                const matchSzt = nazwa.match(regexSzt);
+                
+                if (matchGram) {
+                    // Np. "1.5L" lub "300g"
+                    let gramatura = matchGram[1].replace(',', '.'); // Zamień przecinek na kropkę
+                    let jednostka = matchGram[2].toLowerCase();
+                    gramaturaInput.value = parseFloat(gramatura);
+                    rodzajGramaturySelect.value = jednostka;
+                } else if (matchSzt) {
+                    // Np. "2szt"
+                    gramaturaInput.value = parseInt(matchSzt[1]);
+                    rodzajGramaturySelect.value = 'szt';
+                } else {
+                    // "nic" -> domyślnie 1szt (zgodnie z prośbą)
+                    gramaturaInput.value = 1;
+                    rodzajGramaturySelect.value = 'szt';
                 }
             };
 
@@ -800,8 +840,11 @@
             btnSkanujAparat.addEventListener('click', startSkaner);
             btnZamknijSkaner.addEventListener('click', stopSkaner);
             
-            zaladujBaze();
+            // NOWE: Podpięcie autouzupełniania gramatury
+            nazwaInput.addEventListener('input', autoUzupelnijGramature);
 
+            // Start
+            zaladujBaze();
             eanInput.focus();
         });
     </script>
