@@ -412,6 +412,10 @@
             const dataAktualizacjiDisplay = document.getElementById('dataAktualizacjiDisplay');
             // NOWY PRZYCISK
             const btnSkanujPowiazany = document.getElementById('przycisk-skanuj-powiazany');
+            
+            // NOWE ELEMENTY (DO ZAZNACZANIA CENY)
+            const cenaInput = document.getElementById('cena');
+            const cenaPromoInput = document.getElementById('cenaPromo');
 
             // --- STAN SKANERA (dla stabilizacji) ---
             let ostatnioZeskanowanyEAN = null;
@@ -609,9 +613,15 @@
                 bazaProduktow.forEach(produkt => {
                     const karta = document.createElement('div');
                     karta.className = 'produkt-karta';
+                    
+                    // ZMIANA: Dodanie ceny standardowej i promo (w kolorze pomarańczowym)
+                    const cenaStandardowa = produkt.cena ? `${parseFloat(produkt.cena).toFixed(2)} zł` : 'Brak ceny';
+                    const cenaPromocyjna = produkt.cenaPromo ? `<strong style="color: red; margin-left: 10px;">PROMO: ${parseFloat(produkt.cenaPromo).toFixed(2)} zł</strong>` : '';
+                    
                     karta.innerHTML = `
                         <strong>${produkt.nazwa || 'Brak nazwy'}</strong><br>
-                        EAN: ${produkt.ean} | Akt.: ${produkt.dataAktualizacji || 'Brak daty'}
+                        <span style="color: orange; font-weight: bold;">${cenaStandardowa}</span> ${cenaPromocyjna}<br>
+                        <span style="font-size: 0.9em; color: #555;">EAN: ${produkt.ean} | Akt. ceny: ${produkt.dataAktualizacji || 'Brak daty'}</span>
                     `;
                     
                     karta.addEventListener('click', () => {
@@ -893,6 +903,19 @@
             
             // NOWE: Podpięcie autouzupełniania gramatury
             nazwaInput.addEventListener('input', autoUzupelnijGramature);
+
+            // NOWE (Żądanie 2): Wyszukiwanie po naciśnięciu Enter w polu EAN
+            eanInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Zapobiegaj domyślnej akcji (np. wysłaniu formularza)
+                    wyszukajLubWyczysc();
+                }
+            });
+
+            // NOWE (Żądanie 3): Zaznaczanie tekstu w polach cenowych po kliknięciu
+            const zaznaczPrzyKliknieciu = (event) => event.target.select();
+            cenaInput.addEventListener('click', zaznaczPrzyKliknieciu);
+            cenaPromoInput.addEventListener('click', zaznaczPrzyKliknieciu);
 
             // Start
             zaladujBaze();
