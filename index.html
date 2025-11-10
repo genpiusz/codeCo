@@ -267,7 +267,7 @@
                     <input type="text" inputmode="numeric" pattern="[0-9]*" id="ean" name="ean" placeholder="Wpisz lub zeskanuj kod EAN..." required>
                 </div>
                 <button type="button" id="przycisk-skanuj-aparat">📸</button>
-                <button type="button" id="przycisk-szukaj" class="przycisk">🔎</button>
+                <!-- USUNIĘTO PRZYCISK SZUKAJ -->
             </div>
             
             <!-- DANE PRODUKTU -->
@@ -311,6 +311,7 @@
                         <option value="ml">ml</option>
                         <option value="kg">kg</option>
                         <option value="l">l</option>
+                        <option value="m">m</option> <!-- DODANO 'm' -->
                     </select>
                 </div>
             </div>
@@ -394,7 +395,7 @@
             const listaProduktowDiv = document.getElementById('lista-produktow');
             const komunikatDiv = document.getElementById('komunikat');
             
-            const btnSzukaj = document.getElementById('przycisk-szukaj');
+            // USUNIĘTO btnSzukaj
             const btnZapisz = document.getElementById('przycisk-zapisz');
             const btnUsun = document.getElementById('przycisk-usun');
             const btnEksport = document.getElementById('przycisk-eksport');
@@ -614,13 +615,15 @@
                     const karta = document.createElement('div');
                     karta.className = 'produkt-karta';
                     
-                    // ZMIANA: Dodanie ceny standardowej i promo (w kolorze pomarańczowym)
+                    // ZMIANA: Przebudowa karty produktu
                     const cenaStandardowa = produkt.cena ? `${parseFloat(produkt.cena).toFixed(2)} zł` : 'Brak ceny';
-                    const cenaPromocyjna = produkt.cenaPromo ? `<strong style="color: red; margin-left: 10px;">PROMO: ${parseFloat(produkt.cenaPromo).toFixed(2)} zł</strong>` : '';
+                    const marka = produkt.marka || 'Brak marki';
+                    const sklep = produkt.sklep || 'Brak sklepu';
                     
                     karta.innerHTML = `
                         <strong>${produkt.nazwa || 'Brak nazwy'}</strong><br>
-                        <span style="color: orange; font-weight: bold;">${cenaStandardowa}</span> ${cenaPromocyjna}<br>
+                        <span style="font-size: 0.9em; color: #555;">${marka} / ${sklep}</span><br>
+                        <span style="color: orange; font-weight: bold; margin-top: 4px; display: inline-block;">${cenaStandardowa}</span><br>
                         <span style="font-size: 0.9em; color: #555;">EAN: ${produkt.ean} | Akt. ceny: ${produkt.dataAktualizacji || 'Brak daty'}</span>
                     `;
                     
@@ -861,8 +864,8 @@
                 const gramaturaInput = document.getElementById('gramatura');
                 const rodzajGramaturySelect = document.getElementById('rodzajGramatury');
 
-                // Regex 1: Szuka wartości typu "1.5L", "300ml", "75g" (z kropką lub przecinkiem)
-                const regexGram = /(\d+[\.,]?\d*)\s*(g|ml|kg|l)\.?\s*$/i;
+                // Regex 1: Szuka wartości typu "1.5L", "300ml", "75g", "2m" (z kropką lub przecinkiem)
+                const regexGram = /(\d+[\.,]?\d*)\s*(g|ml|kg|l|m)\.?\s*$/i; // DODANO 'm'
                 // Regex 2: Szuka wartości typu "2szt"
                 const regexSzt = /(\d+)\s*(szt)\.?\s*$/i;
                 
@@ -890,7 +893,7 @@
             // --- INICJALIZACJA ---
             
             // Podpięcie funkcji do przycisków
-            btnSzukaj.addEventListener('click', wyszukajLubWyczysc);
+            // USUNIĘTO btnSzukaj
             btnZapisz.addEventListener('click', zapiszProdukt);
             btnUsun.addEventListener('click', usunProdukt);
             btnEksport.addEventListener('click', eksportujCSV);
@@ -904,12 +907,9 @@
             // NOWE: Podpięcie autouzupełniania gramatury
             nazwaInput.addEventListener('input', autoUzupelnijGramature);
 
-            // NOWE (Żądanie 2): Wyszukiwanie po naciśnięciu Enter w polu EAN
-            eanInput.addEventListener('keydown', (event) => {
-                if (event.key === 'Enter') {
-                    event.preventDefault(); // Zapobiegaj domyślnej akcji (np. wysłaniu formularza)
-                    wyszukajLubWyczysc();
-                }
+            // ZMIANA (Żądanie 2): Wyszukiwanie przy utracie fokusu (blur) zamiast Enter
+            eanInput.addEventListener('blur', () => {
+                wyszukajLubWyczysc();
             });
 
             // NOWE (Żądanie 3): Zaznaczanie tekstu w polach cenowych po kliknięciu
