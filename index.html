@@ -252,6 +252,64 @@
             display: flex;
             justify-content: space-between;
         }
+        
+        /* ZMIANA 1: Styl dla kontenera skanera (Pełnoekranowe okno modalne) */
+        #skaner-kontener {
+            position: fixed; /* Stała pozycja */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9); /* Półprzezroczyste tło */
+            display: none; /* Domyślnie ukryty */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Upewnienie się, że jest na wierzchu */
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        #skaner-kontener.aktywny {
+            display: flex;
+        }
+
+        #przycisk-zamknij-skaner {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--kolor-usun);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        /* Zapewnienie, że widok wideo zajmuje dostępną przestrzeń */
+        #interactive.viewport {
+            width: 100%;
+            max-width: 500px; /* Ograniczenie szerokości na dużych ekranach */
+            height: auto;
+            aspect-ratio: 16 / 9; /* Utrzymanie proporcji wideo */
+            position: relative;
+            border: 3px solid var(--kolor-skaner);
+            margin-bottom: 10px;
+        }
+        #interactive.viewport canvas, #interactive.viewport video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #wynik-skanowania {
+            color: white;
+            font-size: 1.2rem;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
@@ -392,9 +450,14 @@
             <i class="fas fa-exclamation-triangle"></i> Wyczyść całą bazę
         </button>
 
-        <h2>Zapisane produkty</h2>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 2rem;">
+            <h2>Zapisane produkty</h2>
+            <button type="button" id="przycisk-filtr-pogrupowanie" class="przycisk przycisk-zapisz" style="padding: 0.5rem 0.75rem;">
+                <i class="fas fa-filter"></i>
+            </button>
+        </div>
         <div id="lista-produktow">
-            </div>
+        </div>
 
     </main>
 
@@ -421,6 +484,8 @@
             const inputImport = document.getElementById('input-import');
             // ZMIANA: Nowy przycisk
             const btnWyczyscBaze = document.getElementById('przycisk-wyczysc-baze'); 
+            // ZMIANA 2.2: Nowy przycisk filtra
+            const btnFiltrPogrupowanie = document.getElementById('przycisk-filtr-pogrupowanie'); 
 
             const btnSkanujZapisz = document.getElementById('przycisk-skanuj-zapisz'); 
             const skanerKontener = document.getElementById('skaner-kontener');
@@ -442,6 +507,9 @@
             let licznikPoprawnychOdczytow = 0;
             const WYMAGANY_COUNT = 3; 
             let skanerAktywny = 'glowny'; 
+            
+            // ZMIANA 2.3: Stan filtru
+            let filtrPogrupowanieAktywny = false; 
 
             // --- GŁÓWNA BAZA DANYCH ---
             let bazaProduktow = [];
@@ -680,10 +748,21 @@
                 }
             };
             
-            // ZMIANA: Modyfikacja wyswietlListe (Punkty 5 i 6)
+            // ZMIANA 2.4: Modyfikacja wyswietlListe o filtr i aktualizację stylu przycisku
             const wyswietlListe = () => {
                 listaProduktowDiv.innerHTML = '';
                 
+                // Ustawienie stylu przycisku na podstawie stanu filtru
+                if (filtrPogrupowanieAktywny) {
+                    btnFiltrPogrupowanie.style.backgroundColor = 'darkred';
+                    btnFiltrPogrupowanie.style.borderColor = 'white';
+                    btnFiltrPogrupowanie.title = 'Filtr POGRUPOWANIE: WŁĄCZONY (Pokaż tylko Pogrupowane)';
+                } else {
+                    btnFiltrPogrupowanie.style.backgroundColor = 'var(--kolor-zapisz)';
+                    btnFiltrPogrupowanie.style.borderColor = 'none';
+                    btnFiltrPogrupowanie.title = 'Filtr POGRUPOWANIE: WYŁĄCZONY';
+                }
+
                 if (bazaProduktow.length === 0) {
                     listaProduktowDiv.innerHTML = '<p style="text-align: center; color: #777;">Brak produktów w bazie. Dodaj pierwszy.</p>';
                     return;
@@ -691,8 +770,21 @@
                 
                 const aktualnyEAN = eanInput.value.trim();
 
+                // Filtracja (nowość)
+                const produktyDoWyswietlenia = bazaProduktow.filter(produkt => {
+                    if (filtrPogrupowanieAktywny) {
+                        return !!produkt.pogrupowanie; // Pokaż tylko te, które mają pole pogrupowanie
+                    }
+                    return true;
+                });
+                
+                if (produktyDoWyswietlenia.length === 0 && filtrPogrupowanieAktywny) {
+                    listaProduktowDiv.innerHTML = '<p style="text-align: center; color: #777;">Brak produktów z ustawionym Pogrupowaniem.</p>';
+                    return;
+                }
+
                 // Sortowanie (Punkt 6)
-                const posortowaneProdukty = bazaProduktow.slice().sort((a, b) => {
+                const posortowaneProdukty = produktyDoWyswietlenia.slice().sort((a, b) => {
                     const eanA = a.ean || '';
                     const eanB = b.ean || '';
                     
@@ -734,7 +826,7 @@
                     const dataAktualizacji = produkt.dataAktualizacji || 'Brak daty';
                     const marka = produkt.marka || 'Brak marki';
                     const sklep = produkt.sklep || 'Brak sklepu';
-                    const pogrupowanieTekst = produkt.pogrupowanie ? `${produkt.pogrupowanie}` : '';
+                    const pogrupowanieTekst = produkt.pogrupowanie ? `[${produkt.pogrupowanie}]` : '';
 
                     let cenaPromoHTML = '';
                     if (produkt.cenaPromo && produkt.iloscZestaw) {
@@ -1060,6 +1152,12 @@
             inputImport.addEventListener('change', obsluzImportPliku); 
             // ZMIANA: Obsługa czyszczenia bazy
             btnWyczyscBaze.addEventListener('click', wyczyscCalaBaze);
+            
+            // ZMIANA 2.5: Obsługa przełączania filtra
+            btnFiltrPogrupowanie.addEventListener('click', () => {
+                filtrPogrupowanieAktywny = !filtrPogrupowanieAktywny;
+                wyswietlListe(); // Przeładuj listę z nowym stanem filtru
+            });
 
             btnSkanujZapisz.addEventListener('click', zapiszISkanujNowy);
             
