@@ -69,7 +69,7 @@
             flex: 1; 
         }
 
-        /* --- ZMIANA 2: WIĘKSZY PRZYCISK SKANOWANIA (BEZ ZMIAN STYLU) --- */
+        /* Styl głównego przycisku skanowania */
         #przycisk-skanuj-zapisz {
             width: 80px; 
             height: 80px; 
@@ -113,24 +113,24 @@
             flex-grow: 1; 
         }
         
-        /* --- ZMIANA 2: STYL DLA MAŁEGO PRZYCISKU SKANOWANIA --- */
+        /* Styl dla małego przycisku skanowania powiązanych */
         #przycisk-skanuj-powiazany {
-            padding: 0; /* Zastąpiono padding stałymi wymiarami */
+            padding: 0; 
             border: none;
-            border-radius: 50%; /* Zgodnie z głównym przyciskiem */
+            border-radius: 50%; 
             cursor: pointer;
-            font-size: 1.2rem; /* Mniejsza ikona */
+            font-size: 1.2rem; 
             line-height: 1;
-            background-color: var(--kolor-skaner); /* Kolor pomarańczowy */
+            background-color: var(--kolor-skaner); 
             color: white;
             font-weight: 600;
             transition: background-color 0.2s;
-            width: 2.75rem; /* Dopasowanie do wysokości inputa */
-            height: 2.75rem; /* Dopasowanie do wysokości inputa */
-            display: flex; /* Centrowanie ikony */
-            align-items: center; /* Centrowanie ikony */
-            justify-content: center; /* Centrowanie ikony */
-            flex-shrink: 0; /* Zapobieganie kurczeniu */
+            width: 2.75rem; 
+            height: 2.75rem; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            flex-shrink: 0; 
         }
         #przycisk-skanuj-powiazany:hover {
              background-color: #e66000;
@@ -143,15 +143,15 @@
             margin: 2rem 0;
         }
 
-        /* --- ZMIANA 1: Sekcja Import/Eksport/Zapisz/Usuń (4 elementy) (BEZ ZMIAN) --- */
+        /* ZMIANA: Styl przycisków akcji (tylko ikonki) */
         .sekcja-io {
             display: grid;
-            grid-template-columns: repeat(4, 1fr); /* Cztery kolumny */
-            gap: 0.5rem; /* Zmniejszono odstęp */
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 0.5rem; 
             margin-bottom: 1.5rem;
         }
         .przycisk {
-            padding: 0.75rem; 
+            padding: 0.75rem 0.5rem; /* Zmniejszony padding boczny */
             border: none;
             border-radius: 4px;
             cursor: pointer;
@@ -163,7 +163,7 @@
             justify-content: center;
         }
         .przycisk i {
-            margin-right: 0.3rem;
+            margin-right: 0; /* Usunięto margines, bo nie ma tekstu */
             font-size: 1.1rem;
         }
 
@@ -184,10 +184,8 @@
             color: white;
         }
         .przycisk-usun:hover { background-color: #bd2130; }
-        /* KONIEC ZMIANA 1 */
 
-
-        /* Lista produktów */
+        /* ZMIANA: Dodatkowe style dla nowego układu listy produktów */
         #lista-produktow {
             margin-top: 1.5rem;
             border-top: 1px solid #eee;
@@ -200,99 +198,56 @@
             border-radius: 4px;
             margin-bottom: 0.5rem;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: background-color 0.2s, border-color 0.2s;
         }
         .produkt-karta:hover {
             background-color: #f0f0f0;
         }
-        .produkt-karta strong {
-            color: var(--kolor-glowny);
-        }
-
-        /* Drobne komunikaty */
-        #komunikat {
-            text-align: center;
-            padding: 0.5rem;
-            margin-top: 1rem;
-            border-radius: 4px;
-            display: none; 
-        }
-        #komunikat.sukces {
-            background-color: #d4edda;
-            color: #155724;
-            display: block;
-        }
-        #komunikat.blad {
-            background-color: #f8d7da;
-            color: #721c24;
-            display: block;
-        }
         
-        /* STYLA DLA SKANERA KAMERY */
-        #skaner-kontener {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: black;
-            z-index: 1000;
-            display: none; 
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        #skaner-kontener.aktywny {
+        /* Styl dla nowego układu (Punkt 5) */
+        .produkt-karta-naglowek {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
         }
-        #wynik-skanowania {
+        .produkt-nazwa {
+            color: dodgerblue; /* Dodgerblue zgodnie z życzeniem */
+            font-weight: 700;
+            flex-grow: 1;
+            margin-right: 8px; /* Odstęp od cen */
+        }
+        .cena-reg-kontener {
+            border: 1px solid #ff7800; /* Orange */
+            color: #ff7800; /* Orange */
+            font-weight: 700;
+            padding: 2px 5px;
+            border-radius: 3px;
+            margin-left: 8px;
+            font-size: 0.9em;
+            flex-shrink: 0;
+            text-align: right;
+        }
+        .cena-promo-kontener {
+            background-color: #ff7800; /* Orange */
             color: white;
-            font-size: 1.5rem;
-            margin-top: 1rem;
-            text-align: center;
+            font-weight: 700;
+            padding: 2px 5px;
+            border-radius: 3px;
+            margin-left: 8px;
+            font-size: 0.9em;
+            flex-shrink: 0;
         }
-
-        #przycisk-zamknij-skaner {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            padding: 0.75rem 1rem;
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            z-index: 1001;
+        .produkt-detale {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 2px;
         }
-        #interactive.viewport {
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
-        #interactive.viewport > canvas, #interactive.viewport > video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        .drawingBuffer {
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-        .drawingBuffer:after {
-            content: '';
-            position: absolute;
-            top: 45%; 
-            left: 5%; 
-            width: 90%;
-            height: 10%; 
-            border: 3px solid rgba(255, 255, 255, 0.9); 
-            border-radius: 5px;
-            box-sizing: border-box;
-            pointer-events: none;
-            box-shadow: 0 0 15px rgba(255, 255, 0.5); 
+        .produkt-metadata {
+            font-size: 0.8em;
+            color: #777;
+            display: flex;
+            justify-content: space-between;
         }
     </style>
 </head>
@@ -328,28 +283,37 @@
                     <input type="text" id="marka" name="marka" placeholder="Marka produktu">
                 </div>
             </div>
-            <div class="flex-grupa"> <div style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem;">
-                   
+
+            <div class="flex-grupa">
+            
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem;">
+                    
                     <div class="form-grupa" style="margin-bottom: 0;">
-            <div id="data-aktualizacji-kontener"><strong id="dataAktualizacjiDisplay">Brak</strong></div> 
+                        <label for="cena">Cena (zł)</label>
                         <input type="number" id="cena" name="cena" placeholder="1.99" step="0.01">
                     </div>
 
                     <div class="form-grupa" style="margin-bottom: 0;">
+                        <label for="cenaPromo">Cena promo w zestawie (zł / szt.)</label>
                         <div class="flex-grupa" style="gap: 0.5rem; align-items: stretch; margin-bottom: 0;">
-                            <input type="number" id="cenaPromo" name="cenaPromo" placeholder="1.49" step="0.01" style="flex: 3;">zł przy
-                            <input type="number" id="iloscZestaw" name="iloscZestaw" placeholder="2 szt." style="flex: 2; text-align: center;">szt.
+                            <input type="number" id="cenaPromo" name="cenaPromo" placeholder="1.49" step="0.01" style="flex: 3;">
+                            <input type="number" id="iloscZestaw" name="iloscZestaw" placeholder="2 szt." style="flex: 2; text-align: center;">
                         </div>
                     </div>
 
-                </div> <button type="button" id="przycisk-skanuj-zapisz" title="Zapisz zmiany i zeskanuj nowy EAN">
+                </div>
+
+                <button type="button" id="przycisk-skanuj-zapisz" title="Zapisz zmiany i zeskanuj nowy EAN">
                     <i class="fas fa-barcode"></i>
                 </button>
                 
             </div>
 
-
+            <div id="data-aktualizacji-kontener">
+                Ostatnia aktualizacja ceny: <strong id="dataAktualizacjiDisplay">Brak</strong>
+            </div>
             <input type="hidden" id="dataAktualizacji" name="dataAktualizacji">
+            
             
             <div class="form-grupa">
                 <label for="nazwa">Nazwa produktu</label>
@@ -359,11 +323,11 @@
             <div class="flex-grupa">
                 <div class="form-grupa">
                     <label for="gramatura">Ilość/Gramatura</label>
-                    <input type="number" id="gramatura" name="gramatura" placeholder="1" step="any">
+                    <input type="number" id="gramatura" name="gramatura" placeholder="1" step="any" readonly>
                 </div>
                 <div class="form-grupa">
                     <label for="rodzajGramatury">Jednostka</label>
-                    <select id="rodzajGramatury" name="rodzajGramatury">
+                    <select id="rodzajGramatury" name="rodzajGramatury" disabled>
                         <option value="szt">szt.</option>
                         <option value="g">g</option>
                         <option value="ml">ml</option>
@@ -411,19 +375,24 @@
 
         <div class="sekcja-io">
             <button type="button" id="przycisk-zapisz" class="przycisk przycisk-zapisz" title="Zapisz zmiany w bazie">
-                <i class="fas fa-save"></i> Zapisz
+                <i class="fas fa-save"></i> 
             </button>
             <button type="button" id="przycisk-eksport" class="przycisk przycisk-io" title="Eksportuj całą bazę do pliku CSV">
-                <i class="fas fa-file-export"></i> Eksportuj
+                <i class="fas fa-file-export"></i> 
             </button>
             <input type="file" id="input-import" accept=".csv" style="display: none;">
-            <button type="button" id="przycisk-import" class="przycisk przycisk-io" title="Importuj bazę z pliku CSV (nadpisze obecną)">
-                <i class="fas fa-file-import"></i> Importuj
+            <button type="button" id="przycisk-import" class="przycisk przycisk-io" title="Importuj bazę z pliku CSV (nadpisz lub połącz)">
+                <i class="fas fa-file-import"></i> 
             </button>
             <button type="button" id="przycisk-usun" class="przycisk przycisk-usun" title="Usuń obecny produkt z bazy">
-                <i class="fas fa-trash-alt"></i> Usuń
+                <i class="fas fa-trash-alt"></i> 
             </button>
         </div>
+        
+        <button type="button" id="przycisk-wyczysc-baze" class="przycisk przycisk-usun" style="width: 100%; margin: 1rem 0;" title="Usuń CAŁĄ bazę produktów (czyszczenie localStorage)">
+            <i class="fas fa-exclamation-triangle"></i> Wyczyść całą bazę
+        </button>
+
         <h2>Zapisane produkty</h2>
         <div id="lista-produktow">
             </div>
@@ -451,6 +420,8 @@
             const btnEksport = document.getElementById('przycisk-eksport');
             const btnImport = document.getElementById('przycisk-import');
             const inputImport = document.getElementById('input-import');
+            // ZMIANA: Nowy przycisk
+            const btnWyczyscBaze = document.getElementById('przycisk-wyczysc-baze'); 
 
             const btnSkanujZapisz = document.getElementById('przycisk-skanuj-zapisz'); 
             const skanerKontener = document.getElementById('skaner-kontener');
@@ -467,7 +438,7 @@
             const cenaPromoInput = document.getElementById('cenaPromo');
             const iloscZestawInput = document.getElementById('iloscZestaw'); 
 
-            // --- STAN SKANERA (dla stabilizacji) ---
+            // --- STAN SKANERA ---
             let ostatnioZeskanowanyEAN = null;
             let licznikPoprawnychOdczytow = 0;
             const WYMAGANY_COUNT = 3; 
@@ -485,6 +456,17 @@
                 'gramatura', 'rodzajGramatury', 'cena', 'cenaPromo', 'iloscZestaw', 
                 'dataAktualizacji', 'warianty', 'powiazane'
             ];
+
+            // --- NARZĘDZIA DATY DLA IMPORTU (Punkt 1) ---
+            const parseDate = (dateStr) => {
+                if (!dateStr || dateStr.toLowerCase() === 'brak daty') return new Date(0); 
+                const parts = dateStr.split('-');
+                if (parts.length === 3) {
+                    // Format YYYY-MM-DD
+                    return new Date(parts[0], parts[1] - 1, parts[2]);
+                }
+                return new Date(0);
+            };
             
             const zaladujBaze = () => {
                 const daneZLocalStorage = localStorage.getItem(KLUCZ_BAZY);
@@ -521,6 +503,10 @@
                 dataAktualizacjiInput.value = '';
                 iloscZestawInput.value = 1; 
                 document.getElementById('sklep').value = ostatniUzytySklep;
+                
+                // ZMIANA: Ponowne ustawienie readonly/disabled, na wypadek błędu resetowania formularza
+                document.getElementById('gramatura').readOnly = true;
+                document.getElementById('rodzajGramatury').disabled = true;
             };
             
             const wypelnijFormularz = (produkt) => {
@@ -543,6 +529,9 @@
                 const data = produkt.dataAktualizacji || 'Brak';
                 dataAktualizacjiDisplay.textContent = data;
                 dataAktualizacjiInput.value = data !== 'Brak' ? data : '';
+                
+                // Po wypełnieniu formularza, odśwież sortowanie/podświetlenie listy
+                wyswietlListe();
             };
 
             const pobierzDaneZFormularza = () => {
@@ -561,6 +550,7 @@
                 if (!ean) {
                     wyczyscFormularz();
                     nazwaInput.focus();
+                    wyswietlListe(); // Odśwież sortowanie (usuń podświetlenie)
                     return;
                 }
                 
@@ -643,21 +633,15 @@
                 return true; 
             };
 
-            // --- ZMIANA 1: ZMODYFIKOWANA LOGIKA ---
             const zapiszISkanujNowy = () => {
                 const ean = eanInput.value.trim();
             
                 if (!ean) {
-                    // Jeśli EAN jest pusty, po prostu uruchom skaner, aby go znaleźć
                     startSkaner('glowny');
                 } else {
-                    // Jeśli EAN jest obecny, spróbuj zapisać produkt
                     if (zapiszProdukt()) {
-                        // Jeśli zapis się udał, uruchom skaner dla NASTĘPNEGO produktu
                         startSkaner('glowny');
                     }
-                    // Jeśli zapis się nie udał (bo np. eanInput.value był, ale zapiszProdukt() zwrócił false z innego powodu),
-                    // komunikat błędu zostanie pokazany przez zapiszProdukt() i skaner się NIE uruchomi.
                 }
             };
 
@@ -684,6 +668,20 @@
                 }
             };
 
+            // ZMIANA: Nowa funkcja do czyszczenia całej bazy (Punkt 3)
+            const wyczyscCalaBaze = () => {
+                if (window.confirm("UWAGA! Czy na pewno chcesz usunąć CAŁĄ bazę produktów? Tego działania NIE MOŻNA COFNĄĆ!")) {
+                    if (window.confirm("POTWIERDŹ USUNIĘCIE: Naciśnij OK, aby trwale usunąć WSZYSTKIE produkty.")) {
+                        localStorage.removeItem(KLUCZ_BAZY);
+                        bazaProduktow = [];
+                        wyczyscFormularz();
+                        wyswietlListe();
+                        pokazKomunikat('Cała baza danych została usunięta.', 'blad');
+                    }
+                }
+            };
+            
+            // ZMIANA: Modyfikacja wyswietlListe (Punkty 5 i 6)
             const wyswietlListe = () => {
                 listaProduktowDiv.innerHTML = '';
                 
@@ -692,7 +690,28 @@
                     return;
                 }
                 
+                const aktualnyEAN = eanInput.value.trim();
+
+                // Sortowanie (Punkt 6)
                 const posortowaneProdukty = bazaProduktow.slice().sort((a, b) => {
+                    const eanA = a.ean || '';
+                    const eanB = b.ean || '';
+                    
+                    // Priorytet 1: Sprawdź, czy produkt jest aktualnie zaznaczony/wyszukany
+                    const isAktualnyA = eanA === aktualnyEAN || (a.powiazane && a.powiazane.split(',').map(e => e.trim()).includes(aktualnyEAN));
+                    const isAktualnyB = eanB === aktualnyEAN || (b.powiazane && b.powiazane.split(',').map(e => e.trim()).includes(aktualnyEAN));
+
+                    if (isAktualnyA && !isAktualnyB) return -1;
+                    if (!isAktualnyA && isAktualnyB) return 1;
+
+                    // Priorytet 2: Sortowanie po Pogrupowaniu
+                    const pogrupowanieA = (a.pogrupowanie || '').toUpperCase();
+                    const pogrupowanieB = (b.pogrupowanie || '').toUpperCase();
+                    
+                    if (pogrupowanieA < pogrupowanieB) return -1;
+                    if (pogrupowanieA > pogrupowanieB) return 1;
+
+                    // Priorytet 3: Sortowanie po nazwie (w ramach tej samej grupy)
                     const nazwaA = (a.nazwa || '').toUpperCase();
                     const nazwaB = (b.nazwa || '').toUpperCase();
                     if (nazwaA < nazwaB) return -1;
@@ -704,27 +723,45 @@
                     const karta = document.createElement('div');
                     karta.className = 'produkt-karta';
                     
-                    const cenaStandardowa = produkt.cena ? `${parseFloat(produkt.cena).toFixed(2)} zł` : 'Brak ceny';
-                    
-                    let cenaPromoInfo = '';
-                    if (produkt.cenaPromo && produkt.iloscZestaw) {
-                        const ilosc = parseInt(produkt.iloscZestaw);
-                        const cenaZaSzt = parseFloat(produkt.cenaPromo);
-                        const cenaCalosc = (cenaZaSzt * ilosc).toFixed(2);
-                        
-                        cenaPromoInfo = ` (Zestaw ${ilosc} szt.: ${cenaCalosc} zł / ${cenaZaSzt.toFixed(2)} zł/szt.)`;
-                    } else if (produkt.cenaPromo) {
-                         cenaPromoInfo = ` (Promo: ${parseFloat(produkt.cenaPromo).toFixed(2)} zł)`;
+                    // Wyróżnienie wizualne dla aktywnie wybranego (Punkt 6)
+                    const isAktualnieWybrany = produkt.ean === aktualnyEAN || (produkt.powiazane && produkt.powiazane.split(',').map(e => e.trim()).includes(aktualnyEAN));
+                    if (isAktualnieWybrany) {
+                         karta.style.border = '2px solid dodgerblue';
+                         karta.style.backgroundColor = '#eef';
                     }
-                    
+
+                    // Przygotowanie danych (Punkt 5)
+                    const cenaStandardowa = produkt.cena ? parseFloat(produkt.cena).toFixed(2) : '0.00';
+                    const dataAktualizacji = produkt.dataAktualizacji || 'Brak daty';
                     const marka = produkt.marka || 'Brak marki';
                     const sklep = produkt.sklep || 'Brak sklepu';
-                    
+                    const pogrupowanieTekst = produkt.pogrupowanie ? `(${produkt.pogrupowanie})` : '';
+
+                    let cenaPromoHTML = '';
+                    if (produkt.cenaPromo && produkt.iloscZestaw) {
+                        const cenaZaSzt = parseFloat(produkt.cenaPromo).toFixed(2);
+                        const ilosc = parseInt(produkt.iloscZestaw) || 'N';
+                        
+                        cenaPromoHTML = `
+                            <span class="cena-promo-kontener" title="Cena promocyjna w zestawie ${ilosc} sztuk">
+                                ${cenaZaSzt} / ${ilosc} szt.
+                            </span>
+                        `;
+                    }
+
                     karta.innerHTML = `
-                        <strong>${produkt.nazwa || 'Brak nazwy'}</strong><br>
-                        <span style="font-size: 0.9em; color: #555;">${marka} / ${sklep}</span><br>
-                        <span style="color: var(--kolor-skaner); font-weight: bold; margin-top: 4px; display: inline-block;">${cenaStandardowa}${cenaPromoInfo}</span><br>
-                        <span style="font-size: 0.8em; color: #777;">EAN: ${produkt.ean} | Akt. ceny: ${produkt.dataAktualizacji || 'Brak daty'}</span>
+                        <div class="produkt-karta-naglowek">
+                            <span class="produkt-nazwa">${produkt.nazwa || 'Brak nazwy'} ${pogrupowanieTekst}</span>
+                            <span class="cena-reg-kontener">${cenaStandardowa} zł</span>
+                            ${cenaPromoHTML}
+                        </div>
+                        <div class="produkt-detale">
+                            ${marka} / ${sklep}
+                        </div>
+                        <div class="produkt-metadata">
+                            <span>${produkt.ean} [EAN]</span>
+                            <span>${dataAktualizacji} [data]</span>
+                        </div>
                     `;
                     
                     karta.addEventListener('click', () => {
@@ -770,29 +807,64 @@
                 pokazKomunikat('Pomyślnie wyeksportowano do CSV.', 'sukces');
             };
 
-            const importujCSV = () => {
-                inputImport.click();
+            // ZMIANA: Nowa funkcja do łączenia baz danych (Punkt 1)
+            const polaczBaze = (importowaneProdukty) => {
+                let dodaneCount = 0;
+                let zaktualizowaneCount = 0;
+                
+                importowaneProdukty.forEach(importowany => {
+                    const istniejacyIndeks = bazaProduktow.findIndex(p => p.ean === importowany.ean);
+                    
+                    if (istniejacyIndeks > -1) {
+                        // Produkt istnieje: sprawdź datę
+                        const istniejacy = bazaProduktow[istniejacyIndeks];
+                        const dataIstniejaca = parseDate(istniejacy.dataAktualizacji);
+                        const dataImportowana = parseDate(importowany.dataAktualizacji);
+                        
+                        if (dataImportowana > dataIstniejaca) {
+                            // Nowy produkt jest nowszy, nadpisz
+                            bazaProduktow[istniejacyIndeks] = importowany;
+                            zaktualizowaneCount++;
+                        } 
+                    } else {
+                        // Produkt nie istnieje: dodaj
+                        bazaProduktow.push(importowany);
+                        dodaneCount++;
+                    }
+                });
+                pokazKomunikat(`Scalanie zakończone. Dodano: ${dodaneCount}, Zaktualizowano: ${zaktualizowaneCount}.`, 'sukces');
             };
 
+
+            // ZMIANA: Modyfikacja obsługi importu (Punkt 1)
             const obsluzImportPliku = (event) => {
                 const plik = event.target.files[0];
-                if (!plik) return;
-                
-                if (!window.confirm('Czy na pewno chcesz importować? Spowoduje to całkowite nadpisanie (utratę) WSZYSTKICH obecnych danych w bazie.')) {
+                if (!plik) {
                     event.target.value = '';
                     return;
                 }
-                    
+                
+                const trybLaczenia = window.confirm('Wybierz tryb importu:\n\nOK: Połącz obecne dane z importowanymi (dodaj nowe EANy, zaktualizuj te z nowszą datą).\nAnuluj: Całkowicie nadpisz obecną bazę (UTRATA DANYCH).');
+                
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const tekstCSV = e.target.result;
                     try {
-                        const nowaBaza = przetworzCSV(tekstCSV);
+                        const importowaneProdukty = przetworzCSV(tekstCSV);
                         
-                        bazaProduktow = nowaBaza;
+                        if (trybLaczenia) {
+                            polaczBaze(importowaneProdukty); 
+                        } else {
+                            if (!window.confirm('OSTATNIE OSTRZEŻENIE: Całkowite nadpisanie (utrata) WSZYSTKICH obecnych danych w bazie. Kontynuować?')) {
+                                event.target.value = '';
+                                return;
+                            }
+                            bazaProduktow = importowaneProdukty;
+                            pokazKomunikat(`Pomyślnie zaimportowano ${importowaneProdukty.length} produktów (nadpisanie).`, 'sukces');
+                        }
+                        
                         zapiszBaze();
                         wyswietlListe();
-                        pokazKomunikat(`Pomyślnie zaimportowano ${nowaBaza.length} produktów.`, 'sukces');
                         wyczyscFormularz();
 
                     } catch (error) {
@@ -803,6 +875,7 @@
                 reader.readAsText(plik);
                 event.target.value = '';
             };
+
 
             const przetworzCSV = (csv) => {
                 const linie = csv.split('\n').filter(line => line.trim() !== '');
@@ -815,7 +888,6 @@
                 const nowaBaza = [];
 
                 for (let i = 1; i < linie.length; i++) {
-                    // Dzielenie CSV z uwzględnieniem cudzysłowów
                     const wartosci = linie[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(v => v.trim().replace(/"/g, ''));
                     
                     if (wartosci.length < naglowkiDoUzycia.length) continue; 
@@ -840,7 +912,7 @@
             };
 
 
-            // --- FUNKCJE SKANERA KAMERY (bez zmian w logice skanowania) ---
+            // --- FUNKCJE SKANERA (bez zmian) ---
 
             const startSkaner = (typ = 'glowny') => {
                 skanerAktywny = typ; 
@@ -952,7 +1024,7 @@
                 }
             };
             
-            // --- FUNKCJA: AUTOUZUPEŁNIANIE GRAMATURY ---
+            // --- FUNKCJA: AUTOUZUPEŁNIANIE GRAMATURY (bez zmian) ---
             const autoUzupelnijGramature = () => {
                 const nazwa = nazwaInput.value;
                 const gramaturaInput = document.getElementById('gramatura');
@@ -986,11 +1058,11 @@
             btnEksport.addEventListener('click', eksportujCSV);
             btnImport.addEventListener('click', () => inputImport.click()); 
             inputImport.addEventListener('change', obsluzImportPliku); 
+            // ZMIANA: Obsługa czyszczenia bazy
+            btnWyczyscBaze.addEventListener('click', wyczyscCalaBaze);
 
-            // Główny przycisk: Zapisz + Skanuj (NOWA LOGIKA)
             btnSkanujZapisz.addEventListener('click', zapiszISkanujNowy);
             
-            // Obsługa skanera powiązanego
             btnSkanujPowiazany.addEventListener('click', () => startSkaner('powiazany')); 
             btnZamknijSkaner.addEventListener('click', stopSkaner);
             
