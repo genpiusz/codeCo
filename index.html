@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Baza Produktów EAN</title>
     
-    <!-- ŁADOWANIE BIBLIOTEKI QUAGGAJS DLA SKANOWANIA KODÓW KRESKOWYCH -->
     <script src="https://unpkg.com/quagga@0.12.1/dist/quagga.min.js"></script>
-    <!-- Font Awesome dla ikon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
@@ -285,7 +283,7 @@
             border-radius: 5px;
             box-sizing: border-box;
             pointer-events: none;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5); 
+            box-shadow: 0 0 15px rgba(255, 255, 0.5); 
         }
     </style>
 </head>
@@ -294,7 +292,6 @@
     <main class="kontener">
         <form id="formularz-produktu" onsubmit="return false;">
 
-            <!-- SEKCJA EAN -->
             <div class="ean-grupa">
                 <div class="form-grupa" style="margin-bottom: 0;">
                     <label for="ean">Kod EAN</label>
@@ -302,11 +299,20 @@
                 </div>
             </div>
             
-            <!-- DANE PRODUKTU -->
             <div class="flex-grupa">
                 <div class="form-grupa">
                     <label for="sklep">Sklep</label>
-                    <input type="text" id="sklep" name="sklep" placeholder="Nazwa sklepu">
+                    <select id="sklep" name="sklep">
+                        <option value="BIED">BIED</option>
+                        <option value="LIDL">LIDL</option>
+                        <option value="DINO">DINO</option>
+                        <option value="KAUF">KAUF</option>
+                        <option value="AUCH">AUCH</option>
+                        <option value="ELEC">ELEC</option>
+                        <option value="ACTI">ACTI</option>
+                        <option value="ROSS">ROSS</option>
+                        <option value="PEPC">PEPC</option>
+                    </select>
                 </div>
                 <div class="form-grupa">
                     <label for="marka">Marka</label>
@@ -314,21 +320,17 @@
                 </div>
             </div>
 
-            <!-- --- ZMIANA 3: CENA + PRZYCISK SKANUJ/ZAPISZ + CENA PROMO W ZESTAWIE --- -->
             <div class="flex-grupa">
                 
-                <!-- KOLUMNA 1: CENA STANDARDOWA -->
                 <div class="form-grupa">
                     <label for="cena">Cena (zł)</label>
                     <input type="number" id="cena" name="cena" placeholder="1.99" step="0.01">
                 </div>
                 
-                <!-- KOLUMNA 2: NOWY PRZYCISK SKANUJ / ZAPISZ (WIĘKSZY) -->
                 <button type="button" id="przycisk-skanuj-zapisz" title="Zapisz zmiany i zeskanuj nowy EAN">
                     <i class="fas fa-barcode"></i>
                 </button>
                 
-                <!-- KOLUMNA 3: CENA PROMO W ZESTAWIE (2 pola w 1 grupie) -->
                 <div class="form-grupa">
                     <label for="cenaPromo">Cena promo w zestawie (zł / szt.)</label>
                     <div class="flex-grupa" style="gap: 0.5rem; align-items: stretch; margin-bottom: 0;">
@@ -338,14 +340,10 @@
                 </div>
             </div>
 
-            <!-- NOWE POLE: Data Aktualizacji Ceny (DISPLAY) -->
             <div id="data-aktualizacji-kontener">
                 Ostatnia aktualizacja ceny: <strong id="dataAktualizacjiDisplay">Brak</strong>
             </div>
-            <!-- UKRYTE POLE DLA LOGIKI ZAPISU -->
             <input type="hidden" id="dataAktualizacji" name="dataAktualizacji">
-            
-            <!-- KONIEC ZMIANA 3 -->
             
             <div class="form-grupa">
                 <label for="nazwa">Nazwa produktu</label>
@@ -382,7 +380,6 @@
             </div>
 
 
-            <!-- Powiązane EANy (warianty tego samego produktu) -->
             <div class="form-grupa">
                 <label for="powiazane">Produkty powiązane (EANy)</label>
                 <div class="ean-grupa" style="align-items: stretch;">
@@ -391,7 +388,6 @@
                 </div>
             </div>
             
-            <!-- Warianty (dla grupowania w liście) -->
             <div class="form-grupa">
                 <label for="warianty">Warianty (np. smaki, kolory)</label>
                 <input type="text" id="warianty" name="warianty" placeholder="np. Czekoladowy, Waniliowy, Czerwony">
@@ -405,7 +401,6 @@
 
         <hr>
 
-        <!-- ZMIANA 1: SEKCJA IO Z NOWYMI PRZYCISKAMI -->
         <div class="sekcja-io">
             <button type="button" id="przycisk-zapisz" class="przycisk przycisk-zapisz" title="Zapisz zmiany w bazie">
                 <i class="fas fa-save"></i> Zapisz
@@ -421,17 +416,12 @@
                 <i class="fas fa-trash-alt"></i> Usuń
             </button>
         </div>
-        <!-- KONIEC ZMIANA 1 -->
-
-        <!-- LISTA PRODUKTÓW W BAZIE -->
         <h2>Zapisane produkty</h2>
         <div id="lista-produktow">
-            <!-- Tutaj JavaScript będzie dynamicznie wstawiał produkty z bazy -->
-        </div>
+            </div>
 
     </main>
 
-    <!-- KONTENER SKANERA (pełnoekranowy) -->
     <div id="skaner-kontener">
         <button id="przycisk-zamknij-skaner">X Zamknij</button>
         <div id="interactive" class="viewport"></div>
@@ -481,6 +471,10 @@
             let bazaProduktow = [];
             const KLUCZ_BAZY = 'mojaBazaProduktowEAN';
             
+            // ZMIANY 2 i 3: Zmienne stanu dla sklepu i pogrupowania
+            let ostatniUzytySklep = 'BIED'; // Domyślna wartość
+            let ostatnieUzytePogrupowanie = '';
+            
             // ZMIANA 3: Dodanie iloscZestaw do kolumn
             const KOLUMNY_CSV = [
                 'ean', 'nazwa', 'opis', 'sklep', 'marka', 'producent', 'pogrupowanie', 
@@ -523,6 +517,10 @@
                 dataAktualizacjiInput.value = '';
                 // Ustaw domyślnie 1 szt. w zestawie, co jest logiczne
                 iloscZestawInput.value = 1; 
+                
+                // ZMIANA 2: Ustaw domyślny sklep, aby pole nigdy nie było puste
+                // i przenosiło ostatnio używaną wartość
+                document.getElementById('sklep').value = ostatniUzytySklep;
             };
             
             const wypelnijFormularz = (produkt) => {
@@ -538,6 +536,11 @@
                 
                 // Upewnij się, że pole zestawu ma wartość (domyślnie 1, jeśli brak)
                 iloscZestawInput.value = produkt.iloscZestaw || 1; 
+
+                // ZMIANA 2: Upewnij się, że sklep jest ustawiony poprawnie (na wypadek braku w starych danych)
+                if (!produkt.sklep) {
+                    document.getElementById('sklep').value = ostatniUzytySklep;
+                }
 
                 const data = produkt.dataAktualizacji || 'Brak';
                 dataAktualizacjiDisplay.textContent = data;
@@ -587,6 +590,11 @@
                     const wpisanyEAN = eanInput.value;
                     wyczyscFormularz();
                     eanInput.value = wpisanyEAN; 
+                    
+                    // ZMIANA 2 i 3: Autouzupelnij sklep i pogrupowanie z poprzedniego produktu
+                    document.getElementById('sklep').value = ostatniUzytySklep;
+                    document.getElementById('pogrupowanie').value = ostatnieUzytePogrupowanie;
+                    
                     pokazKomunikat('Nowy produkt (EAN nieznaleziony). Wypełnij dane.', 'info');
                     nazwaInput.focus();
                 }
@@ -628,6 +636,10 @@
                     pokazKomunikat('Produkt dodany do bazy!', 'sukces');
                 }
                 
+                // ZMIANA 2 i 3: Zapisz stan sklepu i pogrupowania
+                ostatniUzytySklep = daneProduktu.sklep;
+                ostatnieUzytePogrupowanie = daneProduktu.pogrupowanie;
+                
                 zapiszBaze();
                 wyswietlListe();
                 
@@ -638,6 +650,8 @@
                 return true; 
             };
 
+            // ZMIANA 1: Logika tej funkcji była już poprawna
+            // Zapisuje obecny produkt, a jeśli się uda, skanuje nowy.
             const zapiszISkanujNowy = () => {
                 if (zapiszProdukt()) {
                     startSkaner('glowny');
