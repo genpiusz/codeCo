@@ -453,9 +453,6 @@
 
         <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 2rem;">
             <h2>Zapisane produkty</h2>
-            <button type="button" id="przycisk-filtr-pogrupowanie" class="przycisk przycisk-zapisz" title="Filtruj: Pokaż tylko produkty z Pogrupowaniem" style="padding: 0.75rem;">
-                <i class="fas fa-filter"></i>
-            </button>
         </div>
         <div id="lista-produktow">
         </div>
@@ -1045,7 +1042,7 @@
                         return;
                     }
                     Quagga.start();
-                    wynikSkanowaniaDiv.textContent = 'Ustaw kod EAN w białym pasku.';
+                    wynikSkanowaniaDiv.textContent = 'Ustaw kod EAN na środku.';
                 });
 
                 Quagga.onDetected(onDetected);
