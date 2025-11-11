@@ -88,7 +88,7 @@
             flex-shrink: 0; 
             margin-bottom: 1rem; 
         }
-        #przycisk-skanuj-zapisz:hover {
+        #przycisk-skanuj-zapisz:active {
             background-color: tomato;
             transform: scale(1.05);
         }
@@ -133,7 +133,7 @@
             justify-content: center; 
             flex-shrink: 0; 
         }
-        #przycisk-skanuj-powiazany:hover {
+        #przycisk-skanuj-powiazany:active {
              background-color: tomato;
         }
 
@@ -172,19 +172,19 @@
             background-color: gainsboro;
             color: var(--kolor-tekstu);
         }
-        .przycisk-io:hover { background-color: gray; }
+        .przycisk-io:active { background-color: gray; }
         
         .przycisk-zapisz {
             background-color: var(--kolor-zapisz);
             color: white;
         }
-        .przycisk-zapisz:hover { background-color: darkblue; }
+        .przycisk-zapisz:active { background-color: darkblue; }
 
         .przycisk-usun {
             background-color: var(--kolor-usun);
             color: white;
         }
-        .przycisk-usun:hover { background-color: darkred; }
+        .przycisk-usun:active { background-color: darkred; }
 
         /* ZMIANA: Dodatkowe style dla nowego układu listy produktów */
         #lista-produktow {
@@ -201,7 +201,7 @@
             cursor: pointer;
             transition: background-color 0.2s, border-color 0.2s;
         }
-        .produkt-karta:hover {
+        .produkt-karta:active {
             background-color: gainsboro;
         }
         
@@ -752,14 +752,14 @@
                         <div class="produkt-karta-naglowek">
                             <span class="produkt-nazwa">${produkt.nazwa || 'Brak nazwy'}</span>
                             <span class="cena-reg-kontener">${cenaStandardowa} zł</span>
-                            ${cenaPromoHTML}
+                            
                         </div>
                         <div class="produkt-detale">
                             <span>${marka} / ${sklep} </span>
-							<span>${pogrupowanieTekst}</span>
+							<span>${cenaPromoHTML}</span>
                         </div>
                         <div class="produkt-metadata">
-                            <span>${produkt.ean}</span>
+                            <span>${produkt.ean} ${pogrupowanieTekst}</span>
                             <span>${dataAktualizacji}</span>
                         </div>
                     `;
