@@ -69,15 +69,15 @@
             flex: 1; 
         }
 
-        /* --- ZMIANA 2: WIĘKSZY PRZYCISK SKANOWANIA --- */
+        /* --- ZMIANA 2: WIĘKSZY PRZYCISK SKANOWANIA (BEZ ZMIAN STYLU) --- */
         #przycisk-skanuj-zapisz {
-            width: 80px; /* ZWIĘKSZONO */
-            height: 80px; /* ZWIĘKSZONO */
+            width: 80px; 
+            height: 80px; 
             border-radius: 50%; 
             border: none;
             background-color: var(--kolor-skaner);
             color: white;
-            font-size: 2.5rem; /* ZWIĘKSZONO IKONĘ */
+            font-size: 2.5rem; 
             display: flex;
             align-items: center;
             justify-content: center;
@@ -113,18 +113,27 @@
             flex-grow: 1; 
         }
         
-        /* Styl dla małego przycisku skanowania powiązanych */
+        /* --- ZMIANA 2: STYL DLA MAŁEGO PRZYCISKU SKANOWANIA --- */
         #przycisk-skanuj-powiazany {
-            padding: 0.75rem; 
+            padding: 0; /* Zastąpiono padding stałymi wymiarami */
             border: none;
-            border-radius: 4px;
+            border-radius: 50%; /* Zgodnie z głównym przyciskiem */
             cursor: pointer;
-            font-size: 1.5rem; 
+            font-size: 1.2rem; /* Mniejsza ikona */
             line-height: 1;
-            background-color: #17a2b8;
+            background-color: var(--kolor-skaner); /* Kolor pomarańczowy */
             color: white;
             font-weight: 600;
             transition: background-color 0.2s;
+            width: 2.75rem; /* Dopasowanie do wysokości inputa */
+            height: 2.75rem; /* Dopasowanie do wysokości inputa */
+            display: flex; /* Centrowanie ikony */
+            align-items: center; /* Centrowanie ikony */
+            justify-content: center; /* Centrowanie ikony */
+            flex-shrink: 0; /* Zapobieganie kurczeniu */
+        }
+        #przycisk-skanuj-powiazany:hover {
+             background-color: #e66000;
         }
 
         hr {
@@ -134,7 +143,7 @@
             margin: 2rem 0;
         }
 
-        /* --- ZMIANA 1: Sekcja Import/Eksport/Zapisz/Usuń (4 elementy) --- */
+        /* --- ZMIANA 1: Sekcja Import/Eksport/Zapisz/Usuń (4 elementy) (BEZ ZMIAN) --- */
         .sekcja-io {
             display: grid;
             grid-template-columns: repeat(4, 1fr); /* Cztery kolumny */
@@ -142,14 +151,14 @@
             margin-bottom: 1.5rem;
         }
         .przycisk {
-            padding: 0.75rem; /* Zwiększono padding dla lepszej czytelności ikon */
+            padding: 0.75rem; 
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-size: 1rem;
             font-weight: 600;
             transition: background-color 0.2s;
-            display: flex; /* Dla ikon */
+            display: flex; 
             align-items: center;
             justify-content: center;
         }
@@ -319,30 +328,27 @@
                     <input type="text" id="marka" name="marka" placeholder="Marka produktu">
                 </div>
             </div>
+            <div class="flex-grupa"> <div style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem;">
+                   
+                    <div class="form-grupa" style="margin-bottom: 0;">
+            <div id="data-aktualizacji-kontener"><strong id="dataAktualizacjiDisplay">Brak</strong></div> 
+                        <input type="number" id="cena" name="cena" placeholder="1.99" step="0.01">
+                    </div>
 
-            <div class="flex-grupa">
-                
-                <div class="form-grupa">
-                    <label for="cena">Cena (zł)</label>
-                    <input type="number" id="cena" name="cena" placeholder="1.99" step="0.01">
-                </div>
-                
-                <button type="button" id="przycisk-skanuj-zapisz" title="Zapisz zmiany i zeskanuj nowy EAN">
+                    <div class="form-grupa" style="margin-bottom: 0;">
+                        <div class="flex-grupa" style="gap: 0.5rem; align-items: stretch; margin-bottom: 0;">
+                            <input type="number" id="cenaPromo" name="cenaPromo" placeholder="1.49" step="0.01" style="flex: 3;">zł przy
+                            <input type="number" id="iloscZestaw" name="iloscZestaw" placeholder="2 szt." style="flex: 2; text-align: center;">szt.
+                        </div>
+                    </div>
+
+                </div> <button type="button" id="przycisk-skanuj-zapisz" title="Zapisz zmiany i zeskanuj nowy EAN">
                     <i class="fas fa-barcode"></i>
                 </button>
                 
-                <div class="form-grupa">
-                    <label for="cenaPromo">Cena promo w zestawie (zł / szt.)</label>
-                    <div class="flex-grupa" style="gap: 0.5rem; align-items: stretch; margin-bottom: 0;">
-                        <input type="number" id="cenaPromo" name="cenaPromo" placeholder="1.49" step="0.01" style="flex: 3;">
-                        <input type="number" id="iloscZestaw" name="iloscZestaw" placeholder="2 szt." style="flex: 2; text-align: center;">
-                    </div>
-                </div>
             </div>
 
-            <div id="data-aktualizacji-kontener">
-                Ostatnia aktualizacja ceny: <strong id="dataAktualizacjiDisplay">Brak</strong>
-            </div>
+
             <input type="hidden" id="dataAktualizacji" name="dataAktualizacji">
             
             <div class="form-grupa">
@@ -382,9 +388,11 @@
 
             <div class="form-grupa">
                 <label for="powiazane">Produkty powiązane (EANy)</label>
-                <div class="ean-grupa" style="align-items: stretch;">
+                <div class="ean-grupa" style="align-items: flex-end;">
                     <input type="text" id="powiazane" name="powiazane" placeholder="Wpisz EANy po przecinku...">
-                    <button type="button" id="przycisk-skanuj-powiazany" title="Skanuj powiązany EAN" class="przycisk">+</button>
+                    <button type="button" id="przycisk-skanuj-powiazany" title="Skanuj powiązany EAN" class="przycisk">
+                        <i class="fas fa-barcode"></i>
+                    </button>
                 </div>
             </div>
             
@@ -438,8 +446,7 @@
             const listaProduktowDiv = document.getElementById('lista-produktow');
             const komunikatDiv = document.getElementById('komunikat');
             
-            // ZMIANA 1: Nowe przyciski I/O
-            const btnZapisz = document.getElementById('przycisk-zapisz'); // NOWY
+            const btnZapisz = document.getElementById('przycisk-zapisz'); 
             const btnUsun = document.getElementById('przycisk-usun'); 
             const btnEksport = document.getElementById('przycisk-eksport');
             const btnImport = document.getElementById('przycisk-import');
@@ -458,7 +465,6 @@
             
             const cenaInput = document.getElementById('cena');
             const cenaPromoInput = document.getElementById('cenaPromo');
-            // ZMIANA 3: Nowe pole
             const iloscZestawInput = document.getElementById('iloscZestaw'); 
 
             // --- STAN SKANERA (dla stabilizacji) ---
@@ -471,11 +477,9 @@
             let bazaProduktow = [];
             const KLUCZ_BAZY = 'mojaBazaProduktowEAN';
             
-            // ZMIANY 2 i 3: Zmienne stanu dla sklepu i pogrupowania
-            let ostatniUzytySklep = 'BIED'; // Domyślna wartość
+            let ostatniUzytySklep = 'BIED'; 
             let ostatnieUzytePogrupowanie = '';
             
-            // ZMIANA 3: Dodanie iloscZestaw do kolumn
             const KOLUMNY_CSV = [
                 'ean', 'nazwa', 'opis', 'sklep', 'marka', 'producent', 'pogrupowanie', 
                 'gramatura', 'rodzajGramatury', 'cena', 'cenaPromo', 'iloscZestaw', 
@@ -515,11 +519,7 @@
                 formularz.reset();
                 dataAktualizacjiDisplay.textContent = 'Brak';
                 dataAktualizacjiInput.value = '';
-                // Ustaw domyślnie 1 szt. w zestawie, co jest logiczne
                 iloscZestawInput.value = 1; 
-                
-                // ZMIANA 2: Ustaw domyślny sklep, aby pole nigdy nie było puste
-                // i przenosiło ostatnio używaną wartość
                 document.getElementById('sklep').value = ostatniUzytySklep;
             };
             
@@ -534,10 +534,8 @@
                 opisInput.value = produkt.opis || '';
                 document.getElementById('warianty').value = produkt.warianty || '';
                 
-                // Upewnij się, że pole zestawu ma wartość (domyślnie 1, jeśli brak)
                 iloscZestawInput.value = produkt.iloscZestaw || 1; 
 
-                // ZMIANA 2: Upewnij się, że sklep jest ustawiony poprawnie (na wypadek braku w starych danych)
                 if (!produkt.sklep) {
                     document.getElementById('sklep').value = ostatniUzytySklep;
                 }
@@ -591,7 +589,6 @@
                     wyczyscFormularz();
                     eanInput.value = wpisanyEAN; 
                     
-                    // ZMIANA 2 i 3: Autouzupelnij sklep i pogrupowanie z poprzedniego produktu
                     document.getElementById('sklep').value = ostatniUzytySklep;
                     document.getElementById('pogrupowanie').value = ostatnieUzytePogrupowanie;
                     
@@ -616,7 +613,6 @@
                     // --- AKTUALIZACJA ---
                     const staryProdukt = bazaProduktow[indeksProduktu];
                     
-                    // Sprawdź, czy cena (lub cena promo/zestawu) się zmieniła
                     if (String(staryProdukt.cena) !== String(daneProduktu.cena) || 
                         String(staryProdukt.cenaPromo) !== String(daneProduktu.cenaPromo) ||
                         String(staryProdukt.iloscZestaw) !== String(daneProduktu.iloscZestaw)
@@ -624,7 +620,6 @@
                         daneProduktu.dataAktualizacji = dzisiejszaData;
                         pokazKomunikat('Produkt zaktualizowany (nowa data ceny)!', 'sukces');
                     } else {
-                        // Cena się nie zmieniła, zachowaj starą datę
                         daneProduktu.dataAktualizacji = staryProdukt.dataAktualizacji || dzisiejszaData;
                     }
                     bazaProduktow[indeksProduktu] = daneProduktu;
@@ -636,25 +631,33 @@
                     pokazKomunikat('Produkt dodany do bazy!', 'sukces');
                 }
                 
-                // ZMIANA 2 i 3: Zapisz stan sklepu i pogrupowania
                 ostatniUzytySklep = daneProduktu.sklep;
                 ostatnieUzytePogrupowanie = daneProduktu.pogrupowanie;
                 
                 zapiszBaze();
                 wyswietlListe();
                 
-                // Aktualizuj pole display po zapisie
                 dataAktualizacjiDisplay.textContent = daneProduktu.dataAktualizacji;
                 dataAktualizacjiInput.value = daneProduktu.dataAktualizacji;
 
                 return true; 
             };
 
-            // ZMIANA 1: Logika tej funkcji była już poprawna
-            // Zapisuje obecny produkt, a jeśli się uda, skanuje nowy.
+            // --- ZMIANA 1: ZMODYFIKOWANA LOGIKA ---
             const zapiszISkanujNowy = () => {
-                if (zapiszProdukt()) {
+                const ean = eanInput.value.trim();
+            
+                if (!ean) {
+                    // Jeśli EAN jest pusty, po prostu uruchom skaner, aby go znaleźć
                     startSkaner('glowny');
+                } else {
+                    // Jeśli EAN jest obecny, spróbuj zapisać produkt
+                    if (zapiszProdukt()) {
+                        // Jeśli zapis się udał, uruchom skaner dla NASTĘPNEGO produktu
+                        startSkaner('glowny');
+                    }
+                    // Jeśli zapis się nie udał (bo np. eanInput.value był, ale zapiszProdukt() zwrócił false z innego powodu),
+                    // komunikat błędu zostanie pokazany przez zapiszProdukt() i skaner się NIE uruchomi.
                 }
             };
 
@@ -978,34 +981,29 @@
 
             // --- INICJALIZACJA I OBSŁUGA ZDARZEŃ ---
             
-            // ZMIANA 1: Obsługa przycisków I/O
-            btnZapisz.addEventListener('click', zapiszProdukt); // Przycisk "Zapisz" dyskietka
+            btnZapisz.addEventListener('click', zapiszProdukt); 
             btnUsun.addEventListener('click', usunProdukt);
             btnEksport.addEventListener('click', eksportujCSV);
             btnImport.addEventListener('click', () => inputImport.click()); 
             inputImport.addEventListener('change', obsluzImportPliku); 
 
-            // Główny przycisk: Zapisz + Skanuj
+            // Główny przycisk: Zapisz + Skanuj (NOWA LOGIKA)
             btnSkanujZapisz.addEventListener('click', zapiszISkanujNowy);
             
             // Obsługa skanera powiązanego
             btnSkanujPowiazany.addEventListener('click', () => startSkaner('powiazany')); 
             btnZamknijSkaner.addEventListener('click', stopSkaner);
             
-            // Obsługa autouzupełniania
             nazwaInput.addEventListener('input', autoUzupelnijGramature);
-
-            // Wyszukiwanie przy utracie fokusu EAN
             eanInput.addEventListener('blur', wyszukajLubWyczysc);
 
-            // Zaznaczanie tekstu w polach cenowych po kliknięciu
             const zaznaczPrzyKliknieciu = (event) => event.target.select();
             cenaInput.addEventListener('click', zaznaczPrzyKliknieciu);
             cenaPromoInput.addEventListener('click', zaznaczPrzyKliknieciu);
 
             // Start
             zaladujBaze();
-            wyczyscFormularz(); // Ustawia domyślne wartości
+            wyczyscFormularz(); 
             eanInput.focus();
         });
     </script>
