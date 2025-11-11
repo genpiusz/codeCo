@@ -7,20 +7,21 @@
     
     <script src="https://unpkg.com/quagga@0.12.1/dist/quagga.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap">
 
     <style>
         :root {
-            --kolor-glowny: #007bff;
-            --kolor-tla: #f4f4f9;
-            --kolor-bialy: #ffffff;
-            --kolor-tekstu: #333;
+            --kolor-glowny: dodgerblue;
+            --kolor-tla: lightblue;
+            --kolor-bialy: white;
+            --kolor-tekstu: black;
             --kolor-cien: rgba(0,0,0,0.1);
-            --kolor-skaner: #ff7800; /* Nowy kolor dla przycisku skanowania */
-            --kolor-usun: #dc3545; /* Czerwień dla usuwania */
-            --kolor-zapisz: #28a745; /* Zieleń dla zapisu */
+            --kolor-skaner: darkorange; /* Nowy kolor dla przycisku skanowania */
+            --kolor-usun: crimson; /* Czerwień dla usuwania */
+            --kolor-zapisz: dodgerblue; /* Zieleń dla zapisu */
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: Lexend;
             margin: 0;
             padding: 1rem;
             background-color: var(--kolor-tla);
@@ -55,7 +56,7 @@
             width: 100%;
             padding: 0.75rem;
             box-sizing: border-box; 
-            border: 1px solid #ccc;
+            border: 2px solid gainsboro;
             border-radius: 4px;
         }
         
@@ -88,7 +89,7 @@
             margin-bottom: 1rem; 
         }
         #przycisk-skanuj-zapisz:hover {
-            background-color: #e66000;
+            background-color: tomato;
             transform: scale(1.05);
         }
         
@@ -96,7 +97,7 @@
         #data-aktualizacji-kontener {
             text-align: center;
             font-size: 0.9em;
-            color: #555;
+            color: dodgerblue;
             margin: -0.5rem 0 1rem 0; 
         }
         #data-aktualizacji-kontener strong {
@@ -133,13 +134,13 @@
             flex-shrink: 0; 
         }
         #przycisk-skanuj-powiazany:hover {
-             background-color: #e66000;
+             background-color: tomato;
         }
 
         hr {
             border: 0;
             height: 1px;
-            background: #ddd;
+            background: gray;
             margin: 2rem 0;
         }
 
@@ -168,40 +169,40 @@
         }
 
         .przycisk-io {
-            background-color: #ccc;
+            background-color: gainsboro;
             color: var(--kolor-tekstu);
         }
-        .przycisk-io:hover { background-color: #bbb; }
+        .przycisk-io:hover { background-color: gray; }
         
         .przycisk-zapisz {
             background-color: var(--kolor-zapisz);
             color: white;
         }
-        .przycisk-zapisz:hover { background-color: #1e7e34; }
+        .przycisk-zapisz:hover { background-color: darkblue; }
 
         .przycisk-usun {
             background-color: var(--kolor-usun);
             color: white;
         }
-        .przycisk-usun:hover { background-color: #bd2130; }
+        .przycisk-usun:hover { background-color: darkred; }
 
         /* ZMIANA: Dodatkowe style dla nowego układu listy produktów */
         #lista-produktow {
             margin-top: 1.5rem;
-            border-top: 1px solid #eee;
+            border-top: 1px solid gray;
             padding-top: 1rem;
         }
         .produkt-karta {
             padding: 1rem;
-            background: #f9f9f9;
-            border: 1px solid #eee;
+            background: white;
+            border: 1px solid gainsboro;
             border-radius: 4px;
             margin-bottom: 0.5rem;
             cursor: pointer;
             transition: background-color 0.2s, border-color 0.2s;
         }
         .produkt-karta:hover {
-            background-color: #f0f0f0;
+            background-color: gainsboro;
         }
         
         /* Styl dla nowego układu (Punkt 5) */
@@ -218,8 +219,8 @@
             margin-right: 8px; /* Odstęp od cen */
         }
         .cena-reg-kontener {
-            border: 1px solid #ff7800; /* Orange */
-            color: #ff7800; /* Orange */
+            border: 1px solid darkorange; /* Orange */
+            color: darkorange; /* Orange */
             font-weight: 700;
             padding: 2px 5px;
             border-radius: 3px;
@@ -229,7 +230,7 @@
             text-align: right;
         }
         .cena-promo-kontener {
-            background-color: #ff7800; /* Orange */
+            background-color: darkorange; /* Orange */
             color: white;
             font-weight: 700;
             padding: 2px 5px;
@@ -240,12 +241,14 @@
         }
         .produkt-detale {
             font-size: 0.9em;
-            color: #555;
+            color: black;
+            display: flex;
             margin-bottom: 2px;
+            justify-content: space-between;
         }
         .produkt-metadata {
             font-size: 0.8em;
-            color: #777;
+            color: slategray;
             display: flex;
             justify-content: space-between;
         }
@@ -258,14 +261,13 @@
 
             <div class="ean-grupa">
                 <div class="form-grupa" style="margin-bottom: 0;">
-                    <label for="ean">Kod EAN</label>
                     <input type="text" inputmode="numeric" pattern="[0-9]*" id="ean" name="ean" placeholder="Wpisz lub zeskanuj kod EAN..." required>
                 </div>
             </div>
             
             <div class="flex-grupa">
                 <div class="form-grupa">
-                    <label for="sklep">Sklep</label>
+                    <label for="sklep"></label>
                     <select id="sklep" name="sklep">
                         <option value="BIED">BIED</option>
                         <option value="LIDL">LIDL</option>
@@ -279,25 +281,29 @@
                     </select>
                 </div>
                 <div class="form-grupa">
-                    <label for="marka">Marka</label>
-                    <input type="text" id="marka" name="marka" placeholder="Marka produktu">
+                    <label for="marka"></label>
+                    <input type="text" id="marka" name="marka" placeholder="MARKA">
                 </div>
             </div>
 
+            <div id="data-aktualizacji-kontener">
+                <strong id="dataAktualizacjiDisplay">Brak</strong>
+            </div>
+            <input type="hidden" id="dataAktualizacji" name="dataAktualizacji">
+            
             <div class="flex-grupa">
             
                 <div style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem;">
                     
-                    <div class="form-grupa" style="margin-bottom: 0;">
-                        <label for="cena">Cena (zł)</label>
-                        <input type="number" id="cena" name="cena" placeholder="1.99" step="0.01">
+                    <div class="form-grupa" style="margin-bottom: 0;>
+                        <label for="cena"></label>
+                        <input type="number" id="cena" name="cena" placeholder="1.99" step="0.01" style="border: 4px solid darkorange;">
                     </div>
 
                     <div class="form-grupa" style="margin-bottom: 0;">
-                        <label for="cenaPromo">Cena promo w zestawie (zł / szt.)</label>
                         <div class="flex-grupa" style="gap: 0.5rem; align-items: stretch; margin-bottom: 0;">
-                            <input type="number" id="cenaPromo" name="cenaPromo" placeholder="1.49" step="0.01" style="flex: 3;">
-                            <input type="number" id="iloscZestaw" name="iloscZestaw" placeholder="2 szt." style="flex: 2; text-align: center;">
+                            <input type="number" id="cenaPromo" name="cenaPromo" placeholder="1.49" step="0.01" style="flex: 3; border: 4px solid darkorange; background-color: bisque;">przy
+                            <input type="number" id="iloscZestaw" name="iloscZestaw" placeholder="2 szt." style="flex: 2; text-align: center; border: 4px solid darkorange; background-color: bisque;">
                         </div>
                     </div>
 
@@ -309,25 +315,20 @@
                 
             </div>
 
-            <div id="data-aktualizacji-kontener">
-                Ostatnia aktualizacja ceny: <strong id="dataAktualizacjiDisplay">Brak</strong>
-            </div>
-            <input type="hidden" id="dataAktualizacji" name="dataAktualizacji">
-            
             
             <div class="form-grupa">
-                <label for="nazwa">Nazwa produktu</label>
-                <input type="text" id="nazwa" name="nazwa" placeholder="Mleko UHT 3,2% 1L">
+                <label for="nazwa"></label>
+                <input type="text" id="nazwa" name="nazwa" placeholder="Mleko UHT 3,2% 1L" style="border: 4px solid dodgerblue;">
             </div>
             
             <div class="flex-grupa">
                 <div class="form-grupa">
-                    <label for="gramatura">Ilość/Gramatura</label>
-                    <input type="number" id="gramatura" name="gramatura" placeholder="1" step="any" readonly>
+                    <label for="gramatura"></label>
+                    <input type="number" id="gramatura" name="gramatura" placeholder="1" step="any" readonly style="background-color: gainsboro; color: black;">
                 </div>
                 <div class="form-grupa">
-                    <label for="rodzajGramatury">Jednostka</label>
-                    <select id="rodzajGramatury" name="rodzajGramatury" disabled>
+                    <label for="rodzajGramatury"></label>
+                    <select id="rodzajGramatury" name="rodzajGramatury" disabled  style="background-color: gainsboro; color: black;">
                         <option value="szt">szt.</option>
                         <option value="g">g</option>
                         <option value="ml">ml</option>
@@ -340,15 +341,14 @@
 
             <div class="flex-grupa">
                 <div class="form-grupa">
-                    <label for="producent">Producent</label>
-                    <input type="text" id="producent" name="producent" placeholder="Mlekowita">
+                    <label for="producent"></label>
+                    <input type="text" id="producent" name="producent" placeholder="Producent">
                 </div>
                 <div class="form-grupa">
-                    <label for="pogrupowanie">Pogrupowanie (Kategoria)</label>
-                    <input type="text" id="pogrupowanie" name="pogrupowanie" placeholder="Mleko UHT">
+                    <label for="pogrupowanie"></label>
+                    <input type="text" id="pogrupowanie" name="pogrupowanie" placeholder="Pogrupowanie">
                 </div>
             </div>
-
 
             <div class="form-grupa">
                 <label for="powiazane">Produkty powiązane (EANy)</label>
@@ -371,18 +371,16 @@
 
         </form>
 
-        <hr>
-
         <div class="sekcja-io">
             <button type="button" id="przycisk-zapisz" class="przycisk przycisk-zapisz" title="Zapisz zmiany w bazie">
                 <i class="fas fa-save"></i> 
             </button>
             <button type="button" id="przycisk-eksport" class="przycisk przycisk-io" title="Eksportuj całą bazę do pliku CSV">
-                <i class="fas fa-file-export"></i> 
+                <i class="fas fa-file-export"></i> EXP
             </button>
             <input type="file" id="input-import" accept=".csv" style="display: none;">
             <button type="button" id="przycisk-import" class="przycisk przycisk-io" title="Importuj bazę z pliku CSV (nadpisz lub połącz)">
-                <i class="fas fa-file-import"></i> 
+                IMP <i class="fas fa-file-import"></i>
             </button>
             <button type="button" id="przycisk-usun" class="przycisk przycisk-usun" title="Usuń obecny produkt z bazy">
                 <i class="fas fa-trash-alt"></i> 
@@ -735,7 +733,7 @@
                     const dataAktualizacji = produkt.dataAktualizacji || 'Brak daty';
                     const marka = produkt.marka || 'Brak marki';
                     const sklep = produkt.sklep || 'Brak sklepu';
-                    const pogrupowanieTekst = produkt.pogrupowanie ? `(${produkt.pogrupowanie})` : '';
+                    const pogrupowanieTekst = produkt.pogrupowanie ? `${produkt.pogrupowanie}` : '';
 
                     let cenaPromoHTML = '';
                     if (produkt.cenaPromo && produkt.iloscZestaw) {
@@ -751,16 +749,17 @@
 
                     karta.innerHTML = `
                         <div class="produkt-karta-naglowek">
-                            <span class="produkt-nazwa">${produkt.nazwa || 'Brak nazwy'} ${pogrupowanieTekst}</span>
+                            <span class="produkt-nazwa">${produkt.nazwa || 'Brak nazwy'}</span>
                             <span class="cena-reg-kontener">${cenaStandardowa} zł</span>
                             ${cenaPromoHTML}
                         </div>
                         <div class="produkt-detale">
-                            ${marka} / ${sklep}
+                            <span>${marka} / ${sklep} </span>
+							<span>${pogrupowanieTekst}</span>
                         </div>
                         <div class="produkt-metadata">
-                            <span>${produkt.ean} [EAN]</span>
-                            <span>${dataAktualizacji} [data]</span>
+                            <span>${produkt.ean}</span>
+                            <span>${dataAktualizacji}</span>
                         </div>
                     `;
                     
