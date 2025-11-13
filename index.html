@@ -95,18 +95,15 @@
         /* --- MODYFIKACJA 1: NOWY UKŁAD CENY (3 RÓWNE KOLUMNY) --- */
         .cena-sekcja-glowna {
             display: flex;
-            gap: 10px;
-            align-items: flex-start; /* Wyrównanie do góry */
+            justify-content: space-between;
+            align-items: center;
+            display: flex;
             margin-bottom: 0.5rem;
         }
 
         /* Wspólny styl dla 3 kolumn */
-        .kolumna-cena-reg,
-        .kolumna-cena-promo,
         .kolumna-przycisk-skan {
-            flex: 1; /* 3 RÓWNE KOLUMNY */
-            display: flex;
-            flex-direction: column;
+            margin-left: 16px;
         }
         
         /* Kolumna 1: Cena Regularna + Przelicznik */
@@ -115,6 +112,7 @@
             font-size: 2.5rem; /* Duża czcionka */
             text-align: center;
             border: 4px solid darkorange;
+            border-radius: 16px;
             font-weight: 700;
             color: black;
             padding: 0;
@@ -130,7 +128,7 @@
 
         /* Kolumna 2: Cena Promo (MAŁA) */
         .kolumna-cena-promo {
-            gap: 5px; /* Odstęp między inputem promo a ilością */
+            gap: 5px;
         }
         #cenaPromo,
         #iloscZestaw {
@@ -276,7 +274,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
         .produkt-nazwa {
             color: dodgerblue;
