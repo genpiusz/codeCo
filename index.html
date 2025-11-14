@@ -28,6 +28,7 @@
             color: var(--kolor-tekstu);
         }
         .kontener {
+            font-family: Lexend;
             max-width: 600px;
             margin: 0 auto;
             background: var(--kolor-bialy);
@@ -56,6 +57,7 @@
             width: 100%;
             padding: 0.75rem;
             box-sizing: border-box; 
+            border-radius: 8px;
             border: 2px solid gainsboro;
             border-radius: 4px;
             font-size: 1rem; /* Upewnienie się, że inputy mają standardowy rozmiar czcionki */
@@ -73,7 +75,7 @@
         /* --- MODYFIKACJA 2: Kontener na Datę i Gramaturę --- */
         .meta-info-kontener {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
             flex-wrap: wrap; /* Zawijanie na mniejszych ekranach */
             gap: 0.5rem 1.5rem; /* Mniejszy odstęp pionowy, większy poziomy */
@@ -111,8 +113,8 @@
             height: 80px; /* Wysokość zgodna z przyciskiem */
             font-size: 2.5rem; /* Duża czcionka */
             text-align: center;
-            border: 4px solid darkorange;
-            border-radius: 16px;
+            border: 6px solid darkorange;
+            border-radius: 50px;
             font-weight: 700;
             color: black;
             padding: 0;
@@ -136,6 +138,7 @@
             padding: 0.75rem;
             box-sizing: border-box; 
             border: 4px solid darkorange;
+            border-radius: 8px;
             background-color: bisque;
             font-weight: 700; /* Bold */
             text-align: center;
@@ -407,7 +410,7 @@
                     <input type="text" id="marka" name="marka" placeholder="MARKA">
                 </div>
             </div>
-
+            
             <div class="form-grupa" style="margin-bottom: 0.5rem;">
                 <label for="nazwa"></label>
                 <input type="text" id="nazwa" name="nazwa" placeholder="Nazwa 1szt." style="border: 4px solid dodgerblue;">
@@ -415,11 +418,12 @@
             
             <!-- MODYFIKACJA 2: Gramatura i Data Aktualizacji (Jeden wiersz) -->
             <div class="meta-info-kontener">
+                <div id="gramatura-display-kontener">
+                    <strong id="gramaturaText"></strong> /
+                    <class="cena-jednostkowa-info" id="cenaJednostkowaDisplay"></class>
+                </div>
                 <div id="data-aktualizacji-kontener">
                     <strong id="dataAktualizacjiDisplay">Brak</strong>
-                </div>
-                <div id="gramatura-display-kontener">
-                    <strong id="gramaturaText">Brak danych</strong>
                 </div>
             </div>
             <!-- Ukryte pola przechowujące wartości dla logiki aplikacji -->
@@ -427,8 +431,7 @@
             <input type="hidden" id="rodzajGramatury" name="rodzajGramatury" value="szt">
             <input type="hidden" id="dataAktualizacji" name="dataAktualizacji">
 
-
-            <!-- MODYFIKACJA 1: Nowy układ Ceny (3 RÓWNE KOLUMNY) -->
+            <!--  -->
             <div class="cena-sekcja-glowna">
                 
                 <!-- Kolumna 1: Cena Regularna + Przelicznik -->
@@ -444,9 +447,7 @@
                 </div>
             </div>
             <div class="flex-grupa">
-                <div class="cena-jednostkowa-info" id="cenaJednostkowaDisplay">
-                    -- / --
-                </div>
+
                 
                 <!-- Kolumna 2: Cena Promo (MAŁA) -->
                 <div>
@@ -642,12 +643,12 @@
                 document.getElementById('sklep').value = ostatniUzytySklep;
                 
                 // Reset wizualny gramatury i ceny jednostkowej
-                gramaturaText.textContent = "Brak danych";
+                gramaturaText.textContent = "--";
                 // Ustawienie domyślnych wartości w ukrytych polach
                 gramaturaInput.value = 1;
                 rodzajGramaturyInput.value = 'szt';
                 
-                cenaJednostkowaDisplay.textContent = "- /-";
+                cenaJednostkowaDisplay.textContent = "--";
             };
             
             const wypelnijFormularz = (produkt) => {
@@ -935,13 +936,10 @@
                     karta.innerHTML = `
                         <div class="produkt-karta-naglowek">
                             <span class="produkt-nazwa">${produkt.nazwa || 'Brak nazwy'}</span>
-                            <span class="cena-reg-kontener">${cenaStandardowa} zł</span>
                         </div>
                         <div class="produkt-metadata">
-                            <span>${produkt.ean}</span>
-                            <span>${'-/-'}</span>
-                        </div>
-                        <div class="produkt-metadata">
+                            <span>${dataAktualizacji}</span>
+                            <span> ${cenaPrzeliczeniowa} <span class="cena-reg-kontener"> ${cenaStandardowa} zł</span> </span>
                         </div>
                         <div class="produkt-detale">
                             <span>${marka} / ${sklep} </span>
@@ -949,7 +947,7 @@
                         </div>
                         <div class="produkt-metadata">
                             <span>${pogrupowanieTekst}</span>
-                            <span>${dataAktualizacji}</span>
+                            <span>${produkt.ean}</span>
                         </div>
                     `;
                     
