@@ -22,7 +22,7 @@
         body {
             font-family: Lexend;
             margin: 0;
-            padding: 0.5rem;
+            padding: 0.2rem;
             background-color: var(--kolor-tla);
             color: var(--kolor-tekstu);
         }
@@ -31,7 +31,7 @@
             max-width: 320px;
             margin: 0 auto;
             background: var(--kolor-bialy);
-            padding: 1.5rem;
+            padding: 0.5rem;
             border-radius: 24px;
             box-shadow: 0px 6px 2px gainsboro;
         }
@@ -43,11 +43,11 @@
         
         /* Sekcja formularza */
         .form-grupa {
-            margin-bottom: 1rem;
+            margin-bottom: 0.2rem;
         }
         .form-grupa label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.2rem;
             font-weight: 600;
         }
         .form-grupa input,
@@ -56,20 +56,27 @@
             font-family: Lexend;
             height: 48px;
             width: 100%;
-            padding: 0.75rem;
+            padding: 0.5rem;
             box-sizing: border-box; 
             border: 4px solid gray;
             border-radius: 24px;
             font-size: 0.9rem;
         }
         
+        #warianty {
+            padding: 0.3rem;
+            font-size: 0.8rem;
+            min-height: 48px;
+            resize: none; /* użytkownik nie może ręcznie zmieniać rozmiaru */
+            overflow: hidden;
+        }
         .form-grupa-nazwa {
             font-size: 1.2rem;
         }
         
         .flex-grupa {
             display: flex;
-            gap: 1rem;
+            gap: 0.2rem;
             align-items: flex-end; 
         }
         .flex-grupa > .form-grupa {
@@ -82,15 +89,10 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap; /* Zawijanie na mniejszych ekranach */
-            gap: 0.5rem 1.5rem; /* Mniejszy odstęp pionowy, większy poziomy */
+            gap: 0.5rem 0.2rem; /* Mniejszy odstęp pionowy, większy poziomy */
             margin: 0 0 1rem 0;
             font-size: 0.9em;
             color: var(--kolor-glowny); /* Kolor bazowy dla obu */
-        }
-        /* Styl dla daty (zmieniony) */
-        #data-aktualizacji-kontener {
-            /* Usunięto margin, text-align, ustawiony przez flex */
-            
         }
         /* Styl dla gramatury (zmieniony) */
         #gramatura-display-kontener {
@@ -106,7 +108,7 @@
             justify-content: space-between;
             align-items: center;
             display: flex;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.2rem;
         }
 
         /* Wspólny styl dla 3 kolumn */
@@ -138,13 +140,13 @@
             text-align: center;
             font-size: 1rem;
             color: black;
-            margin-top: 4px;
+            margin-top: 0.2rem;
             line-height: 1.2;
         }
 
         /* Kolumna 2: Cena Promo (MAŁA) */
         .kolumna-cena-promo {
-            gap: 5px;
+            gap: 0.2rem;
         }
         #cenaPromo {
             /* Domyślna wysokość (na podstawie paddingu) */
@@ -238,7 +240,7 @@
         /* Sekcja EAN ze miejscem na skaner */
         .ean-grupa {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.2rem;
             align-items: flex-end;
         }
         .ean-grupa > .form-grupa {
@@ -277,7 +279,7 @@
         .sekcja-io {
             display: grid;
             grid-template-columns: repeat(4, 1fr); 
-            gap: 0.5rem; 
+            gap: 0.2rem; 
             margin-bottom: 1.5rem;
             
             display: flex;
@@ -562,7 +564,8 @@
             
             <div class="form-grupa">
                 <label for="warianty">Warianty (np. smaki, kolory)</label>
-                <input type="text" id="warianty" name="warianty" placeholder="np. Czekoladowy, Waniliowy, Czerwony">
+                <textarea id="warianty" name="warianty" placeholder="np. Czekoladowy, Waniliowy, Czerwony"
+                          oninput="this.style.height='auto'; this.style.height=this.scrollHeight + 'px';"></textarea>
             </div>
             
             <textarea id="opis" name="opis" style="display:none;"></textarea>
@@ -595,18 +598,6 @@
       			<button type="button" id="przycisk-wyczysc-baze" class="przycisk przycisk-usun" style="width: 48px;" title="Usuń CAŁĄ bazę produktów (czyszczenie localStorage)">
       			    <i class="fas fa-trash-alt"></i>
       			</button>
-        </div>
-        
-        <div class="sekcja-io">
-            <button type="button" id="filtr-EAN" class="przycisk przycisk-io" title="Filtruj po EAN">
-                EAN
-            </button>
-            <button type="button" id="filtr-nazwa" class="przycisk przycisk-io" title="Filtruj po nazwie">
-                nazwa
-            </button>
-            <button type="button" id="filtr-pogrupowanie" class="przycisk przycisk-io" title="Filtruj po pogrupowaniu">
-                pogrupowanie
-            </button>
         </div>
         
         <div id="lista-produktow">
