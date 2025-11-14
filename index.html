@@ -306,6 +306,7 @@
         }
 
         .przycisk-io {
+            font: Lexend;
             background-color: gainsboro;
             color: var(--kolor-tekstu);
         }
@@ -577,11 +578,6 @@
             <button type="button" id="przycisk-zapisz" class="przycisk przycisk-zapisz" title="Zapisz zmiany w bazie">
                 <i class="fas fa-save"></i> 
             </button>
-            <button type="button" id="przycisk-usun" class="przycisk przycisk-usun" title="Usuń obecny produkt z bazy">
-                <i class="fas fa-xmark"></i> 
-            </button>
-          </div>
-          <div class="sekcja-io">
             <button type="button" id="przycisk-eksport" class="przycisk przycisk-io" title="Eksportuj całą bazę do pliku CSV">
                 <i class="fas fa-file-export"></i>
             </button>
@@ -589,13 +585,16 @@
             <button type="button" id="przycisk-import" class="przycisk przycisk-io" title="Importuj bazę z pliku CSV (nadpisz lub połącz)">
                 <i class="fas fa-file-import"></i>
             </button>
-      			<button type="button" id="przycisk-wyczysc-baze" class="przycisk przycisk-usun" title="Usuń CAŁĄ bazę produktów (czyszczenie localStorage)">
-      			    <i class="fas fa-trash-alt"></i>
-      			</button>
-        </div>
+            <button type="button" id="przycisk-usun" class="przycisk przycisk-usun" title="Usuń obecny produkt z bazy">
+                <i class="fas fa-xmark"></i> 
+            </button>
+          </div>
 
         <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 2rem;">
-            <h2>Zapisane produkty</h2> <i class="fas fa-filter"></i>
+            <i class="fas fa-filter"></i><h2>Zapisane produkty</h2> 
+      			<button type="button" id="przycisk-wyczysc-baze" class="przycisk przycisk-usun" style="width: 48px;" title="Usuń CAŁĄ bazę produktów (czyszczenie localStorage)">
+      			    <i class="fas fa-trash-alt"></i>
+      			</button>
         </div>
         
         <div class="sekcja-io">
