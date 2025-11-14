@@ -28,7 +28,7 @@
         }
         .kontener {
             font-family: Lexend;
-            max-width: 300px;
+            max-width: 320px;
             margin: 0 auto;
             background: var(--kolor-bialy);
             padding: 1.5rem;
@@ -279,18 +279,26 @@
             grid-template-columns: repeat(4, 1fr); 
             gap: 0.5rem; 
             margin-bottom: 1.5rem;
+            
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            display: flex;
+            margin-bottom: 0.5rem;
         }
         .przycisk {
-            padding: 0.75rem 0.5rem;
+            font: Lexend;
+            height: 48px;
+            width: 100%;
             border: none;
             border-radius: 24px;
             cursor: pointer;
             font-size: 1rem;
-            font-weight: 600;
             transition: background-color 0.2s;
             display: flex; 
             align-items: center;
             justify-content: center;
+            
         }
         .przycisk i {
             margin-right: 0;
@@ -563,26 +571,31 @@
         </form>
 
         <div class="sekcja-io">
+            <button type="button" id="przycisk-dodaj" class="przycisk przycisk-zapisz" title="dodaj produkt do bazy">
+                <i class="fas fa-plus"></i> 
+            </button>
             <button type="button" id="przycisk-zapisz" class="przycisk przycisk-zapisz" title="Zapisz zmiany w bazie">
                 <i class="fas fa-save"></i> 
             </button>
+            <button type="button" id="przycisk-usun" class="przycisk przycisk-usun" title="Usuń obecny produkt z bazy">
+                <i class="fas fa-xmark"></i> 
+            </button>
+          </div>
+          <div class="sekcja-io">
             <button type="button" id="przycisk-eksport" class="przycisk przycisk-io" title="Eksportuj całą bazę do pliku CSV">
-                <i class="fas fa-file-export"></i> EXP
+                <i class="fas fa-file-export"></i>
             </button>
             <input type="file" id="input-import" accept=".csv" style="display: none;">
             <button type="button" id="przycisk-import" class="przycisk przycisk-io" title="Importuj bazę z pliku CSV (nadpisz lub połącz)">
-                IMP <i class="fas fa-file-import"></i>
+                <i class="fas fa-file-import"></i>
             </button>
-            <button type="button" id="przycisk-usun" class="przycisk przycisk-usun" title="Usuń obecny produkt z bazy">
-                <i class="fas fa-trash-alt"></i> 
-            </button>
+      			<button type="button" id="przycisk-wyczysc-baze" class="przycisk przycisk-usun" title="Usuń CAŁĄ bazę produktów (czyszczenie localStorage)">
+      			    <i class="fas fa-trash-alt"></i>
+      			</button>
         </div>
 
         <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 2rem;">
-            <h2>Zapisane produkty</h2>
-      			<button type="button" id="przycisk-wyczysc-baze" class="przycisk przycisk-usun" style="margin: 1rem 0;" title="Usuń CAŁĄ bazę produktów (czyszczenie localStorage)">
-      			Wyczyść
-      			</button>
+            <h2>Zapisane produkty</h2> <i class="fas fa-filter"></i>
         </div>
         
         <div class="sekcja-io">
