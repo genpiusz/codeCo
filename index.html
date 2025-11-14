@@ -13,7 +13,7 @@
         :root {
             --kolor-glowny: dodgerblue;
             --kolor-tla: black;
-            --kolor-bialy: gainsboro;
+            --kolor-bialy: white;
             --kolor-tekstu: black;
             --kolor-skaner: darkorange;
             --kolor-usun: crimson;
@@ -593,8 +593,11 @@
             </button>
           </div>
 
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 2rem;">
-            <i class="fas fa-filter"></i><h2>Zapisane produkty</h2> 
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem;">
+            <button type="button" id="przycisk-filtr" class="przycisk przycisk-zapisz" style="width: 48px;" title="filtruj bazę">
+                <i class="fas fa-filter"></i> 
+            </button>
+            <h2>Zapisane produkty</h2> 
       			<button type="button" id="przycisk-wyczysc-baze" class="przycisk przycisk-usun" style="width: 48px;" title="Usuń CAŁĄ bazę produktów (czyszczenie localStorage)">
       			    <i class="fas fa-trash-alt"></i>
       			</button>
