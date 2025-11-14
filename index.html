@@ -53,14 +53,18 @@
         .form-grupa input,
         .form-grupa select,
         .form-grupa textarea {
+            font-family: Lexend;
             height: 48px;
             width: 100%;
             padding: 0.75rem;
             box-sizing: border-box; 
             border: 4px solid gray;
             border-radius: 24px;
-            font-size: 1rem; /* Upewnienie się, że inputy mają standardowy rozmiar czcionki */
-            
+            font-size: 0.9rem;
+        }
+        
+        .form-grupa-nazwa {
+            font-size: 1.2rem;
         }
         
         .flex-grupa {
@@ -243,10 +247,10 @@
         
         #przycisk-skanuj-powiazany {
             height: 48px;
-            width: 48px;
+            width: 80px;
             padding: 0; 
             border: none;
-            border-radius: 50%; 
+            border-radius: 24px; 
             cursor: pointer;
             font-size: 1.2rem; 
             line-height: 1;
@@ -522,17 +526,17 @@
                 <div class="form-grupa">
                     <label for="pogrupowanie"></label>
                     <select id="pogrupowanie" name="pogrupowanie">
-                        <option value="BIED">SŁONY</option>
-                        <option value="LIDL">SŁODKI</option>
-                        <option value="DINO">NAPOJE</option>
-                        <option value="KAUF">DPH</option>
-                        <option value="ELEC">GOSPO.</option>
-                        <option value="PEPC">Worki na śmieci</option>
-                        <option value="ACTI">MAJSTERK.</option>
-                        <option value="ROSS">SEZON</option>
-                        <option value="PEPC">ŚWIEŻY</option>
-                        <option value="PEPC">Jogurty</option>
-                        <option value="PEPC">Sery</option>
+                        <option value="SŁONY">SŁONY</option>
+                        <option value="SŁODKI">SŁODKI</option>
+                        <option value="NAPOJE">NAPOJE</option>
+                        <option value="DPH">DPH</option>
+                        <option value="GOSPO">GOSPO.</option>
+                        <option value="Worki na śmieci">Worki na śmieci</option>
+                        <option value="MAJSTER">MAJSTER.</option>
+                        <option value="SEZON">SEZON</option>
+                        <option value="ŚWIEŻY">ŚWIEŻY</option>
+                        <option value="Jogurty">Jogurty</option>
+                        <option value="Sery">Sery</option>
                     </select>
                 </div>
             </div>
@@ -580,9 +584,8 @@
       			Wyczyść
       			</button>
         </div>
+        
         <div class="sekcja-io">
-          button
-        </div>
             <button type="button" id="filtr-EAN" class="przycisk przycisk-io" title="Filtruj po EAN">
                 EAN
             </button>
@@ -592,6 +595,8 @@
             <button type="button" id="filtr-pogrupowanie" class="przycisk przycisk-io" title="Filtruj po pogrupowaniu">
                 pogrupowanie
             </button>
+        </div>
+        
         <div id="lista-produktow">
         </div>
 
