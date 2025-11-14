@@ -15,7 +15,6 @@
             --kolor-tla: lightblue;
             --kolor-bialy: white;
             --kolor-tekstu: black;
-            --kolor-cien: rgba(0,0,0,0.1);
             --kolor-skaner: darkorange;
             --kolor-usun: crimson;
             --kolor-zapisz: dodgerblue;
@@ -23,18 +22,18 @@
         body {
             font-family: Lexend;
             margin: 0;
-            padding: 1rem;
+            padding: 0.5rem;
             background-color: var(--kolor-tla);
             color: var(--kolor-tekstu);
         }
         .kontener {
             font-family: Lexend;
-            max-width: 600px;
+            max-width: 300px;
             margin: 0 auto;
             background: var(--kolor-bialy);
             padding: 1.5rem;
             border-radius: 24px;
-            box-shadow: 0 4px 12px var(--kolor-cien);
+            box-shadow: 0px 6px 2px gainsboro;
         }
         h1 {
             text-align: center;
@@ -54,12 +53,14 @@
         .form-grupa input,
         .form-grupa select,
         .form-grupa textarea {
+            height: 48px;
             width: 100%;
             padding: 0.75rem;
             box-sizing: border-box; 
-            border: 2px solid gainsboro;
+            border: 4px solid gray;
             border-radius: 24px;
             font-size: 1rem; /* Upewnienie się, że inputy mają standardowy rozmiar czcionki */
+            
         }
         
         .flex-grupa {
@@ -85,11 +86,13 @@
         /* Styl dla daty (zmieniony) */
         #data-aktualizacji-kontener {
             /* Usunięto margin, text-align, ustawiony przez flex */
+            
         }
         /* Styl dla gramatury (zmieniony) */
         #gramatura-display-kontener {
             font-weight: bold; /* Zgodnie z prośbą */
             color: var(--kolor-glowny); /* Upewnienie się, że ma ten sam kolor */
+            
         }
 
 
@@ -109,20 +112,28 @@
         
         /* Kolumna 1: Cena Regularna + Przelicznik */
         .kolumna-cena-reg #cena {
-            height: 80px; /* Wysokość zgodna z przyciskiem */
+            height: 68px; /* Wysokość zgodna z przyciskiem */
             font-size: 2.5rem; /* Duża czcionka */
             text-align: center;
+            font-style: italic;
             border: 6px solid darkorange;
-            border-radius: 50px;
+            border-radius: 40px;
             font-weight: 700;
             color: black;
             padding: 0;
             width: 100%; /* Wypełnij kolumnę */
+            
+        }
+        
+        #cena::-webkit-inner-spin-button,
+        #cena::-webkit-outer-spin-button {
+            -webkit-appearance: none; /* Chrome, Safari, Edge */
+            margin: 0;
         }
         .cena-jednostkowa-info {
             text-align: center;
             font-size: 1rem;
-            color: slategray;
+            color: black;
             margin-top: 4px;
             line-height: 1.2;
         }
@@ -131,35 +142,64 @@
         .kolumna-cena-promo {
             gap: 5px;
         }
-        #cenaPromo,
-        #iloscZestaw {
+        #cenaPromo {
             /* Domyślna wysokość (na podstawie paddingu) */
+            font-style: italic;
+            height: 48px;
             padding: 0.75rem;
             box-sizing: border-box; 
             border: 4px solid darkorange;
             border-radius: 24px;
             background-color: darkorange;
             font-weight: 700; /* Bold */
-            color: white;
+            color: black;
             text-align: center;
-            width: 100%; /* Wypełnij kolumnę */
-            /* Usunięte: flex: 1, font-size: 1.2rem, height */
-            font-size: 1rem; /* Standardowy rozmiar czcionki inputa */
+            width: 100%;
+            font-size: 1.2rem;
+            
+        }
+        
+        #cenaPromo::-webkit-inner-spin-button,
+        #cenaPromo::-webkit-outer-spin-button {
+            -webkit-appearance: none; /* Chrome, Safari, Edge */
+            margin: 0;
+        }
+        
+        #iloscZestaw {
+            /* Domyślna wysokość (na podstawie paddingu) */
+            font-style: italic;
+            height: 48px;
+            padding: 0.75rem;
+            box-sizing: border-box; 
+            border: 4px solid darkorange;
+            border-radius: 24px;
+            background-color: darkorange;
+            font-weight: 700; /* Bold */
+            color: black;
+            text-align: center;
+            width: 80px;
+            font-size: 1.2rem;
+        }
+        
+        #iloscZestaw::-webkit-inner-spin-button,
+        #iloscZestaw::-webkit-outer-spin-button {
+            -webkit-appearance: none; /* Chrome, Safari, Edge */
+            margin: 0;
         }
         
         input::placeholder{
-            color: gray;
+            color: dimgray;
             font-style: italic;
-            font-weight: normal;
+            font-weight: thin;
         }
         
         #cenaPromo::placeholder{
-            color: gainsboro;
+            color: dimgray;
             font-style: italic;
             font-weight: normal;
         }
         #iloscZestaw::placeholder{
-            color: gainsboro;
+            color: dimgray;
             font-style: italic;
             font-weight: normal;
         }
@@ -173,7 +213,7 @@
         #przycisk-skanuj-zapisz {
             width: 80px; 
             height: 80px; 
-            border-radius: 50%; 
+            border-radius: 40px; 
             border: none;
             background-color: var(--kolor-skaner);
             color: white;
@@ -181,14 +221,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             transition: background-color 0.2s, transform 0.1s;
             cursor: pointer;
-            flex-shrink: 0; 
+            flex-shrink: 0;
         }
         #przycisk-skanuj-zapisz:active {
             background-color: tomato;
-            transform: scale(1.05);
+            box-shadow: 0px 4px dimgray inset;
         }
         
 
@@ -203,6 +242,8 @@
         }
         
         #przycisk-skanuj-powiazany {
+            height: 48px;
+            width: 48px;
             padding: 0; 
             border: none;
             border-radius: 50%; 
@@ -213,22 +254,20 @@
             color: white;
             font-weight: 600;
             transition: background-color 0.2s;
-            width: 2.75rem; 
-            height: 2.75rem; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             flex-shrink: 0; 
         }
         #przycisk-skanuj-powiazany:active {
-             background-color: tomato;
+            background-color: tomato;
+            box-shadow: 0px 4px dimgray inset;
         }
 
         hr {
             border: 0;
             height: 1px;
             background: gray;
-            margin: 2rem 0;
         }
 
         .sekcja-io {
@@ -258,19 +297,19 @@
             background-color: gainsboro;
             color: var(--kolor-tekstu);
         }
-        .przycisk-io:active { background-color: gray; }
+        .przycisk-io:active { background-color: gray; box-shadow: 0px 4px dimgray inset; }
         
         .przycisk-zapisz {
             background-color: var(--kolor-zapisz);
             color: white;
         }
-        .przycisk-zapisz:active { background-color: darkblue; }
+        .przycisk-zapisz:active { background-color: royalblue; box-shadow: 0px 4px dimgray inset; }
 
         .przycisk-usun {
             background-color: var(--kolor-usun);
             color: white;
         }
-        .przycisk-usun:active { background-color: darkred; }
+        .przycisk-usun:active { background-color: darkred; box-shadow: 0px 4px dimgray inset;}
 
         #lista-produktow {
             margin-top: 1.5rem;
@@ -288,6 +327,7 @@
         }
         .produkt-karta:active {
             background-color: gainsboro;
+            box-shadow: 0px 4px royalblue inset;
         }
         
         .produkt-karta-naglowek {
@@ -298,29 +338,28 @@
         }
         .produkt-nazwa {
             color: dodgerblue;
-            font-weight: 700;
+            font-weight: bold;
             flex-grow: 1;
             margin-right: 8px;
         }
         .cena-reg-kontener {
-            border: 1px solid darkorange;
-            color: darkorange;
-            font-weight: 700;
+            border: 3px solid darkorange;
+            color: black;
             padding: 2px 5px;
+            font-weight: bold;
             border-radius: 3px;
             margin-left: 8px;
-            font-size: 0.9em;
+            font-size: 1.1em;
             flex-shrink: 0;
             text-align: right;
         }
         .cena-promo-kontener {
             background-color: darkorange;
-            color: white;
-            font-weight: 700;
+            color: black;
             padding: 2px 5px;
             border-radius: 3px;
             margin-left: 8px;
-            font-size: 0.9em;
+            font-size: 1em;
             flex-shrink: 0;
         }
         .produkt-detale {
@@ -408,6 +447,10 @@
             
             <div class="flex-grupa">
                 <div class="form-grupa">
+                    <label for="marka"></label>
+                    <input type="text" id="marka" name="marka" placeholder="MARKA">
+                </div>
+                <div class="form-grupa">
                     <label for="sklep"></label>
                     <select id="sklep" name="sklep">
                         <option value="BIED">BIED</option>
@@ -422,15 +465,11 @@
                         <option value="PEPC">INNE</option>
                     </select>
                 </div>
-                <div class="form-grupa">
-                    <label for="marka"></label>
-                    <input type="text" id="marka" name="marka" placeholder="MARKA">
-                </div>
             </div>
             
             <div class="form-grupa" style="margin-bottom: 0.5rem;">
                 <label for="nazwa"></label>
-                <input type="text" id="nazwa" name="nazwa" placeholder="Nazwa 1szt." style="border: 4px solid dodgerblue;">
+                <input type="text" id="nazwa" name="nazwa" placeholder="Nazwa 1szt." style="color: dodgerblue; font-weight: bold; border: 4px solid dodgerblue;">
             </div>
             
             <!-- MODYFIKACJA 2: Gramatura i Data Aktualizacji (Jeden wiersz) -->
@@ -468,7 +507,7 @@
                 
                 <!-- Kolumna 2: Cena Promo (MAŁA) -->
                 <div>
-                    <input type="number" id="cenaPromo" name="cenaPromo" placeholder="Promo" step="0.01">
+                    <input type="number" id="cenaPromo" name="cenaPromo" placeholder="0,00" step="0.01">
                 </div>przy <br> zak.
                 <div>
                     <input type="number" id="iloscZestaw" name="iloscZestaw" placeholder="1 szt." value="1">
@@ -534,14 +573,25 @@
                 <i class="fas fa-trash-alt"></i> 
             </button>
         </div>
-        
 
         <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 2rem;">
             <h2>Zapisane produkty</h2>
-			<button type="button" id="przycisk-wyczysc-baze" class="przycisk przycisk-usun" style="margin: 1rem 0;" title="Usuń CAŁĄ bazę produktów (czyszczenie localStorage)">
-			Wyczyść
-			</button>
+      			<button type="button" id="przycisk-wyczysc-baze" class="przycisk przycisk-usun" style="margin: 1rem 0;" title="Usuń CAŁĄ bazę produktów (czyszczenie localStorage)">
+      			Wyczyść
+      			</button>
         </div>
+        <div class="sekcja-io">
+          button
+        </div>
+            <button type="button" id="filtr-EAN" class="przycisk przycisk-io" title="Filtruj po EAN">
+                EAN
+            </button>
+            <button type="button" id="filtr-nazwa" class="przycisk przycisk-io" title="Filtruj po nazwie">
+                nazwa
+            </button>
+            <button type="button" id="filtr-pogrupowanie" class="przycisk przycisk-io" title="Filtruj po pogrupowaniu">
+                pogrupowanie
+            </button>
         <div id="lista-produktow">
         </div>
 
@@ -927,8 +977,7 @@
                     
                     const isAktualnieWybrany = produkt.ean === aktualnyEAN || (produkt.powiazane && produkt.powiazane.split(',').map(e => e.trim()).includes(aktualnyEAN));
                     if (isAktualnieWybrany) {
-                         karta.style.border = '2px solid dodgerblue';
-                         karta.style.backgroundColor = '#eef';
+                         karta.style.border = '4px solid dodgerblue';
                     }
 
                     const cenaStandardowa = produkt.cena ? parseFloat(produkt.cena).toFixed(2) : '0.00';
