@@ -309,7 +309,7 @@
 
         .przycisk-io {
             font: Lexend;
-            background-color: white;
+            background-color: gainsboro;
             color: var(--kolor-tekstu);
         }
         .przycisk-io:active { background-color: gray; box-shadow: 0px 4px dimgray inset; }
@@ -477,7 +477,7 @@
                         <option value="ACTI">ACTI</option>
                         <option value="ROSS">ROSS</option>
                         <option value="PEPC">PEPC</option>
-                        <option value="PEPC">INNE</option>
+                        <option value="INNE">INNE</option>
                     </select>
                 </div>
             </div>
@@ -568,6 +568,7 @@
                           oninput="this.style.height='auto'; this.style.height=this.scrollHeight + 'px';"></textarea>
             </div>
             
+            <!-- POLE OPIS JEST USUNIĘTE Z LOGIKI, ALE ZOSTAWIONE W HTML DLA ZACHOWANIA UKŁADU (ZGODNIE Z PROŚBĄ) -->
             <textarea id="opis" name="opis" style="display:none;"></textarea>
 
             <div id="komunikat"></div>
@@ -575,10 +576,10 @@
         </form>
 
         <div class="sekcja-io">
-            <button type="button" id="przycisk-dodaj" class="przycisk przycisk-zapisz" title="dodaj produkt do bazy">
+            <button type="button" id="przycisk-dodaj" class="przycisk przycisk-zapisz" title="Dodaj lub nadpisz produkt (EAN + Sklep)">
                 <i class="fas fa-plus"></i> 
             </button>
-            <button type="button" id="przycisk-zapisz" class="przycisk przycisk-zapisz" title="Zapisz zmiany w bazie">
+            <button type="button" id="przycisk-zapisz" class="przycisk przycisk-zapisz" title="Zapisz dane wspólne (Nazwa, Marka itp.) dla WSZYSTKICH produktów z tym EAN">
                 <i class="fas fa-save"></i> 
             </button>
             <button type="button" id="przycisk-eksport" class="przycisk przycisk-io" title="Eksportuj całą bazę do pliku CSV">
@@ -588,13 +589,13 @@
             <button type="button" id="przycisk-import" class="przycisk przycisk-io" title="Importuj bazę z pliku CSV (nadpisz lub połącz)">
                 <i class="fas fa-file-import"></i>
             </button>
-            <button type="button" id="przycisk-usun" class="przycisk przycisk-usun" title="Usuń obecny produkt z bazy">
+            <button type="button" id="przycisk-usun" class="przycisk przycisk-usun" title="Usuń obecny produkt z bazy (EAN + Sklep)">
                 <i class="fas fa-xmark"></i> 
             </button>
           </div>
 
         <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem;">
-            <button type="button" id="przycisk-filtr" class="przycisk przycisk-zapisz" style="width: 48px;" title="filtruj bazę">
+            <button type="button" id="przycisk-filtr" class="przycisk przycisk-zapisz" style="width: 48px;" title="Filtruj listę: Wszystko">
                 <i class="fas fa-filter"></i> 
             </button>
             <h2>Zapisane produkty</h2> 
@@ -624,18 +625,24 @@
             const listaProduktowDiv = document.getElementById('lista-produktow');
             const komunikatDiv = document.getElementById('komunikat');
             
-            const btnZapisz = document.getElementById('przycisk-zapisz'); 
+            // ZMODYFIKOWANE: btnZapisz to teraz przycisk do aktualizacji danych wspólnych
+            const btnDodaj = document.getElementById('przycisk-dodaj'); // NOWY
+            const btnZapiszWspolne = document.getElementById('przycisk-zapisz'); // ZMIANA ZNACZENIA
             const btnUsun = document.getElementById('przycisk-usun'); 
             const btnEksport = document.getElementById('przycisk-eksport');
             const btnImport = document.getElementById('przycisk-import');
             const inputImport = document.getElementById('input-import');
             const btnWyczyscBaze = document.getElementById('przycisk-wyczysc-baze'); 
-            const btnFiltrPogrupowanie = document.getElementById('przycisk-filtr-pogrupowanie'); 
+            
+            // ZMODYFIKOWANE: Logika dla przycisku filtra
+            const btnFiltr = document.getElementById('przycisk-filtr'); 
 
             const btnSkanujZapisz = document.getElementById('przycisk-skanuj-zapisz'); 
             const skanerKontener = document.getElementById('skaner-kontener');
             const btnZamknijSkaner = document.getElementById('przycisk-zamknij-skaner');
             const wynikSkanowaniaDiv = document.getElementById('wynik-skanowania');
+            
+            // Pole 'opis' nie jest już używane w logice CSV, ale zostaje dla spójności formularza
             const opisInput = document.getElementById('opis'); 
             
             const nazwaInput = document.getElementById('nazwa');
@@ -659,7 +666,8 @@
             const WYMAGANY_COUNT = 3; 
             let skanerAktywny = 'glowny'; 
             
-            let filtrPogrupowanieAktywny = false; 
+            // ZMODYFIKOWANE: Stan filtra (zamiast filtrPogrupowanieAktywny)
+            let stanFiltru = 'wszystko'; // 'wszystko', 'ean', 'nazwa', 'grupa'
 
             // --- GŁÓWNA BAZA DANYCH ---
             let bazaProduktow = [];
@@ -668,8 +676,9 @@
             let ostatniUzytySklep = 'BIED'; 
             let ostatnieUzytePogrupowanie = '';
             
+            // ZMODYFIKOWANE: Usunięto 'opis' z listy kolumn (Zadanie 5)
             const KOLUMNY_CSV = [
-                'ean', 'nazwa', 'opis', 'sklep', 'marka', 'producent', 'pogrupowanie', 
+                'ean', 'nazwa', /* 'opis' usunięty */ 'sklep', 'marka', 'producent', 'pogrupowanie', 
                 'gramatura', 'rodzajGramatury', 'cena', 'cenaPromo', 'iloscZestaw', 
                 'dataAktualizacji', 'warianty', 'powiazane'
             ];
@@ -737,7 +746,7 @@
                         pole.value = produkt[klucz];
                     }
                 }
-                opisInput.value = produkt.opis || '';
+                // opisInput.value = produkt.opis || ''; // 'opis' nie jest już kluczowy
                 document.getElementById('warianty').value = produkt.warianty || '';
                 
                 iloscZestawInput.value = produkt.iloscZestaw || 1; 
@@ -778,12 +787,14 @@
                 for (const [klucz, wartosc] of formData.entries()) {
                     produkt[klucz] = wartosc;
                 }
-                produkt.opis = opisInput.value; 
+                // produkt.opis = opisInput.value; // 'opis' nie jest już kluczowy
                 return produkt;
             };
 
+            // ZMODYFIKOWANE: Logika wyszukiwania (Zadanie 3)
             const wyszukajLubWyczysc = () => {
                 const ean = eanInput.value.trim();
+                const wybranySklep = document.getElementById('sklep').value;
                 
                 if (!ean) {
                     wyczyscFormularz();
@@ -792,21 +803,39 @@
                     return;
                 }
                 
-                let znalezionyProdukt = bazaProduktow.find(p => p.ean === ean);
+                // 1. Wyszukaj EAN + Sklep
+                let znalezionyProdukt = bazaProduktow.find(p => p.ean === ean && p.sklep === wybranySklep);
                 
+                // 2. Jeśli nie ma, wyszukaj sam EAN (w innym sklepie)
                 if (!znalezionyProdukt) {
-                    znalezionyProdukt = bazaProduktow.find(p => {
+                    znalezionyProdukt = bazaProduktow.find(p => p.ean === ean);
+                }
+                
+                // 3. Jeśli nie ma, wyszukaj w powiązanych (z priorytetem sklepu)
+                if (!znalezionyProdukt) {
+                    let znalezionyPowiazany = bazaProduktow.find(p => {
                         if (!p.powiazane) return false;
                         const powiazaneEANy = p.powiazane.split(',').map(e => e.trim());
-                        return powiazaneEANy.includes(ean);
+                        return powiazaneEANy.includes(ean) && p.sklep === wybranySklep;
                     });
+                    
+                    if (!znalezionyPowiazany) {
+                         znalezionyPowiazany = bazaProduktow.find(p => {
+                            if (!p.powiazane) return false;
+                            const powiazaneEANy = p.powiazane.split(',').map(e => e.trim());
+                            return powiazaneEANy.includes(ean);
+                        });
+                    }
+                    znalezionyProdukt = znalezionyPowiazany; // Przypisz, jeśli znaleziono
                 }
                 
                 if (znalezionyProdukt) {
                     wypelnijFormularz(znalezionyProdukt);
                     
                     if (znalezionyProdukt.ean !== ean) {
-                         pokazKomunikat(`Znaleziono EAN powiązany. Załadowano główny produkt: ${znalezionyProdukt.nazwa}`, 'info');
+                         pokazKomunikat(`Znaleziono EAN powiązany. Załadowano: ${znalezionyProdukt.nazwa}`, 'info');
+                    } else if (znalezionyProdukt.sklep !== wybranySklep) {
+                         pokazKomunikat(`Załadowano produkt ze sklepu: ${znalezionyProdukt.sklep}`, 'info');
                     } else {
                          pokazKomunikat(`Załadowano produkt: ${znalezionyProdukt.nazwa}`);
                     }
@@ -828,80 +857,130 @@
                 }
             };
 
-            const zapiszProdukt = () => {
-                const ean = eanInput.value.trim();
+            // NOWA FUNKCJA: Logika dla przycisku "Dodaj" (Zadanie 1)
+            const dodajProdukt = () => {
+                const daneProduktu = pobierzDaneZFormularza();
+                const ean = daneProduktu.ean.trim();
+                
                 if (!ean) {
                     pokazKomunikat('EAN jest wymagany!', 'blad');
                     eanInput.focus();
-                    return false; 
+                    return false;
                 }
-                
-                const daneProduktu = pobierzDaneZFormularza();
-                const indeksProduktu = bazaProduktow.findIndex(p => p.ean === ean);
+
+                // Szukaj wg EAN + Sklep
+                const indeksProduktu = bazaProduktow.findIndex(p => p.ean === ean && p.sklep === daneProduktu.sklep);
                 const dzisiejszaData = new Date().toISOString().split('T')[0];
-                
+
                 if (indeksProduktu > -1) {
-                    // --- AKTUALIZACJA ---
+                    // --- NADPISANIE PRODUKTU (ten sam EAN, ten sam Sklep) ---
                     const staryProdukt = bazaProduktow[indeksProduktu];
                     
+                    // Sprawdź, czy cena się zmieniła, aby zaktualizować datę
                     if (String(staryProdukt.cena) !== String(daneProduktu.cena) || 
                         String(staryProdukt.cenaPromo) !== String(daneProduktu.cenaPromo) ||
                         String(staryProdukt.iloscZestaw) !== String(daneProduktu.iloscZestaw)
                     ) {
                         daneProduktu.dataAktualizacji = dzisiejszaData;
-                        pokazKomunikat('Produkt zaktualizowany (nowa data ceny)!', 'sukces');
                     } else {
+                        // Zachowaj starą datę, jeśli cena bez zmian
                         daneProduktu.dataAktualizacji = staryProdukt.dataAktualizacji || dzisiejszaData;
                     }
+                    
                     bazaProduktow[indeksProduktu] = daneProduktu;
+                    pokazKomunikat('Produkt nadpisany (ten sam EAN i Sklep)!', 'sukces');
                     
                 } else {
-                    // --- NOWY PRODUKT ---
+                    // --- NOWY PRODUKT (inny sklep lub nowy EAN) ---
                     daneProduktu.dataAktualizacji = dzisiejszaData;
                     bazaProduktow.push(daneProduktu);
-                    pokazKomunikat('Produkt dodany do bazy!', 'sukces');
+                    pokazKomunikat('Produkt dodany jako nowa pozycja (inny sklep lub nowy EAN)!', 'sukces');
                 }
-                
+
+                // Zapisz ostatnie ustawienia
                 ostatniUzytySklep = daneProduktu.sklep;
                 ostatnieUzytePogrupowanie = daneProduktu.pogrupowanie;
                 
                 zapiszBaze();
-                wyswietlListe();
+                wyswietlListe(); // Odśwież listę
                 
+                // Odśwież widok daty, gramatury i ceny po zapisie
                 dataAktualizacjiDisplay.textContent = daneProduktu.dataAktualizacji;
                 dataAktualizacjiInput.value = daneProduktu.dataAktualizacji;
-                
-                // Odśwież widok gramatury i ceny po zapisie
                 zaktualizujWidokGramatury(daneProduktu.gramatura, daneProduktu.rodzajGramatury);
                 obliczCeneJednostkowa();
 
-                return true; 
+                return true;
             };
 
+            // ZMODYFIKOWANA FUNKCJA: Logika dla przycisku "Zapisz" (Zadanie 2)
+            // Ta funkcja teraz aktualizuje dane wspólne dla WSZYSTKICH produktów z tym samym EAN
+            const zapiszDaneWspolne = () => {
+                const ean = eanInput.value.trim();
+                if (!ean) {
+                    pokazKomunikat('Wpisz EAN produktów do aktualizacji', 'blad');
+                    eanInput.focus();
+                    return;
+                }
+
+                const daneFormularza = pobierzDaneZFormularza();
+                let zaktualizowanoLicznik = 0;
+
+                bazaProduktow.forEach(produkt => {
+                    if (produkt.ean === ean) {
+                        produkt.nazwa = daneFormularza.nazwa;
+                        produkt.marka = daneFormularza.marka;
+                        produkt.producent = daneFormularza.producent;
+                        produkt.pogrupowanie = daneFormularza.pogrupowanie;
+                        produkt.powiazane = daneFormularza.powiazane;
+                        produkt.warianty = daneFormularza.warianty;
+                        // NIE aktualizujemy ceny, sklepu, daty itp. - tylko dane wspólne
+                        zaktualizowanoLicznik++;
+                    }
+                });
+
+                if (zaktualizowanoLicznik > 0) {
+                    zapiszBaze();
+                    wyswietlListe();
+                    pokazKomunikat(`Zaktualizowano dane wspólne dla ${zaktualizowanoLicznik} produktów z tym EAN.`, 'sukces');
+                } else {
+                    pokazKomunikat('Nie znaleziono żadnych produktów z tym EAN do aktualizacji.', 'info');
+                }
+            };
+
+            // ZMODYFIKOWANA FUNKCJA: Przycisk skanowania używa teraz `dodajProdukt`
             const zapiszISkanujNowy = () => {
                 const ean = eanInput.value.trim();
             
                 if (!ean) {
+                    // Jeśli pole EAN jest puste, po prostu zacznij skanować
                     startSkaner('glowny');
                 } else {
-                    if (zapiszProdukt()) {
+                    // Jeśli jest EAN, spróbuj dodać/nadpisać produkt
+                    // funkcja dodajProdukt() zwróci true jeśli się powiedzie
+                    if (dodajProdukt()) {
+                        // Jeśli zapis się powiódł, uruchom skaner
                         startSkaner('glowny');
                     }
+                    // Jeśli zapis się nie powiódł (np. brak EAN), skaner się nie uruchomi
                 }
             };
 
 
             const usunProdukt = () => {
                 const ean = eanInput.value.trim();
+                const sklep = document.getElementById('sklep').value;
+                
                 if (!ean) {
                     pokazKomunikat('Wpisz EAN produktu do usunięcia', 'blad');
                     return;
                 }
                 
-                const indeksProduktu = bazaProduktow.findIndex(p => p.ean === ean);
+                // Usuń tylko konkretny produkt (EAN + Sklep)
+                const indeksProduktu = bazaProduktow.findIndex(p => p.ean === ean && p.sklep === sklep);
                 
                 if (indeksProduktu > -1) {
-                    if (window.confirm(`Czy na pewno usunąć produkt ${bazaProduktow[indeksProduktu].nazwa} (EAN: ${ean})?`)) { 
+                    if (window.confirm(`Czy na pewno usunąć ${bazaProduktow[indeksProduktu].nazwa} (EAN: ${ean}) ze sklepu ${sklep}?`)) { 
                         bazaProduktow.splice(indeksProduktu, 1);
                         zapiszBaze();
                         wyswietlListe();
@@ -909,7 +988,7 @@
                         pokazKomunikat('Produkt został usunięty.', 'sukces');
                     }
                 } else {
-                    pokazKomunikat('Nie znaleziono produktu o tym EAN.', 'blad');
+                    pokazKomunikat(`Nie znaleziono produktu o EAN ${ean} w sklepie ${sklep}.`, 'blad');
                 }
             };
 
@@ -925,60 +1004,119 @@
                 }
             };
             
+            // NOWA FUNKCJA: Helper do obliczania ceny jednostkowej dla kart (Zadanie 4)
+            const obliczCeneJednostkowaDlaKarty = (produkt) => {
+                const cena = parseFloat(produkt.cena);
+                // Użyj wartości domyślnych, jeśli brakuje danych (dla starych wpisów)
+                const waga = parseFloat(produkt.gramatura) || 1;
+                const jednostka = produkt.rodzajGramatury || 'szt';
+
+                if (!cena || isNaN(cena) || isNaN(waga) || waga === 0) {
+                    return "- /-"; // Nie można obliczyć
+                }
+
+                let wynik = 0;
+                let jednostkaWynikowa = "";
+
+                if (jednostka === 'g' || jednostka === 'ml') {
+                    wynik = (cena / waga) * 100;
+                    jednostkaWynikowa = (jednostka === 'g') ? '100g' : '100ml';
+                } else if (jednostka === 'kg' || jednostka === 'l' || jednostka === 'm') {
+                     wynik = cena / waga;
+                     jednostkaWynikowa = jednostka;
+                } else if (jednostka === 'szt' && waga > 1) {
+                     wynik = cena / waga;
+                     jednostkaWynikowa = 'szt';
+                } else {
+                    // Domyślnie (dla 1 szt) nie pokazuj ceny jednostkowej
+                    return "- /-";
+                }
+
+                return `${wynik.toFixed(2)} /${jednostkaWynikowa}`;
+            };
+            
+            // ZMODYFIKOWANE: Logika listy (Filtrowanie i Sortowanie - Zadanie 4)
             const wyswietlListe = () => {
                 listaProduktowDiv.innerHTML = '';
                 
-                if (btnFiltrPogrupowanie) {
-                    if (filtrPogrupowanieAktywny) {
-                        btnFiltrPogrupowanie.style.backgroundColor = 'darkorange'; 
-                        btnFiltrPogrupowanie.style.borderColor = 'white';
-                        btnFiltrPogrupowanie.title = 'Filtr POGRUPOWANIE: WŁĄCZONY (Pokaż tylko Pogrupowane)';
-                    } else {
-                        btnFiltrPogrupowanie.style.backgroundColor = 'var(--kolor-zapisz)';
-                        btnFiltrPogrupowanie.style.borderColor = 'none';
-                        btnFiltrPogrupowanie.title = 'Filtr POGRUPOWANIE: WYŁĄCZONY';
-                    }
+                // Pobierz aktualne dane z formularza do sortowania/filtrowania
+                const aktualnyEAN = eanInput.value.trim();
+                const aktualnaNazwa = nazwaInput.value.trim().toUpperCase();
+                const aktualnePogrupowanie = document.getElementById('pogrupowanie').value;
+
+                // Aktualizacja wyglądu przycisku filtra
+                const ikonaFiltra = btnFiltr.querySelector('i');
+                switch (stanFiltru) {
+                    case 'ean':
+                        btnFiltr.title = 'Filtruj listę: Tylko ten EAN';
+                        ikonaFiltra.className = 'fas fa-barcode';
+                        btnFiltr.style.backgroundColor = 'darkorange';
+                        break;
+                    case 'nazwa':
+                        btnFiltr.title = 'Filtruj listę: Tylko ta Nazwa';
+                        ikonaFiltra.className = 'fas fa-font';
+                        btnFiltr.style.backgroundColor = 'darkorange';
+                        break;
+                    case 'grupa':
+                        btnFiltr.title = 'Filtruj listę: Tylko ta Grupa';
+                        ikonaFiltra.className = 'fas fa-layer-group';
+                        btnFiltr.style.backgroundColor = 'darkorange';
+                        break;
+                    default: // 'wszystko'
+                        btnFiltr.title = 'Filtruj listę: Wszystko';
+                        ikonaFiltra.className = 'fas fa-filter';
+                        btnFiltr.style.backgroundColor = 'var(--kolor-zapisz)';
                 }
+
 
                 if (bazaProduktow.length === 0) {
                     listaProduktowDiv.innerHTML = '<p style="text-align: center; color: #777;">Brak produktów w bazie. Dodaj pierwszy.</p>';
                     return;
                 }
                 
-                const aktualnyEAN = eanInput.value.trim();
-
+                // Krok 1: Filtrowanie (Zadanie 4 - filtr)
                 const produktyDoWyswietlenia = bazaProduktow.filter(produkt => {
-                    if (filtrPogrupowanieAktywny) {
-                        return !!produkt.pogrupowanie && produkt.pogrupowanie.trim() !== ''; 
-                    }
-                    return true;
+                    if (stanFiltru === 'wszystko') return true;
+                    if (stanFiltru === 'ean' && aktualnyEAN) return produkt.ean === aktualnyEAN;
+                    if (stanFiltru === 'nazwa' && aktualnaNazwa) return (produkt.nazwa || '').toUpperCase() === aktualnaNazwa;
+                    if (stanFiltru === 'grupa' && aktualnePogrupowanie) return produkt.pogrupowanie === aktualnePogrupowanie;
+                    return true; // Jeśli filtr ustawiony, ale brak danych w formularzu, pokaż wszystko
                 });
                 
-                if (produktyDoWyswietlenia.length === 0 && filtrPogrupowanieAktywny) {
-                    listaProduktowDiv.innerHTML = '<p style="text-align: center; color: #777;">Brak produktów z ustawionym Pogrupowaniem.</p>';
+                if (produktyDoWyswietlenia.length === 0) {
+                    listaProduktowDiv.innerHTML = '<p style="text-align: center; color: #777;">Brak produktów pasujących do filtra.</p>';
                     return;
                 }
 
+                // Krok 2: Sortowanie (Zadanie 4 - sortowanie)
                 const posortowaneProdukty = produktyDoWyswietlenia.slice().sort((a, b) => {
-                    const eanA = a.ean || '';
-                    const eanB = b.ean || '';
-                    
-                    const isAktualnyA = eanA === aktualnyEAN || (a.powiazane && a.powiazane.split(',').map(e => e.trim()).includes(aktualnyEAN));
-                    const isAktualnyB = eanB === aktualnyEAN || (b.powiazane && b.powiazane.split(',').map(e => e.trim()).includes(aktualnyEAN));
-
-                    if (isAktualnyA && !isAktualnyB) return -1;
-                    if (!isAktualnyA && isAktualnyB) return 1;
-
-                    const pogrupowanieA = (a.pogrupowanie || '').toUpperCase();
-                    const pogrupowanieB = (b.pogrupowanie || '').toUpperCase();
-                    
-                    if (pogrupowanieA < pogrupowanieB) return -1;
-                    if (pogrupowanieA > pogrupowanieB) return 1;
-
                     const nazwaA = (a.nazwa || '').toUpperCase();
                     const nazwaB = (b.nazwa || '').toUpperCase();
+                    const grupaA = a.pogrupowanie || '';
+                    const grupaB = b.pogrupowanie || '';
+
+                    // Funkcja oceny - wyższy wynik = wyżej na liście
+                    const getScore = (produkt) => {
+                        if (aktualnyEAN && produkt.ean === aktualnyEAN) return 4; // Ten sam EAN
+                        if (aktualnaNazwa && (produkt.nazwa || '').toUpperCase() === aktualnaNazwa) return 3; // Ta sama Nazwa
+                        if (aktualnePogrupowanie && produkt.pogrupowanie === aktualnePogrupowanie) return 2; // Ta sama Grupa
+                        return 0; // Reszta
+                    };
+                    
+                    const scoreA = getScore(a);
+                    const scoreB = getScore(b);
+
+                    if (scoreA !== scoreB) {
+                        return scoreB - scoreA; // Sortuj malejąco wg oceny
+                    }
+
+                    // Sortowanie domyślne (gdy oceny są równe)
+                    if (grupaA < grupaB) return -1;
+                    if (grupaA > grupaB) return 1;
+
                     if (nazwaA < nazwaB) return -1;
                     if (nazwaA > nazwaB) return 1;
+                    
                     return 0;
                 });
 
@@ -986,7 +1124,8 @@
                     const karta = document.createElement('div');
                     karta.className = 'produkt-karta';
                     
-                    const isAktualnieWybrany = produkt.ean === aktualnyEAN || (produkt.powiazane && produkt.powiazane.split(',').map(e => e.trim()).includes(aktualnyEAN));
+                    // Podświetlenie na podstawie EAN LUB powiązanych EAN (jak w starej logice)
+                    const isAktualnieWybrany = aktualnyEAN && (produkt.ean === aktualnyEAN || (produkt.powiazane && produkt.powiazane.split(',').map(e => e.trim()).includes(aktualnyEAN)));
                     if (isAktualnieWybrany) {
                          karta.style.border = '4px solid dodgerblue';
                     }
@@ -995,7 +1134,10 @@
                     const dataAktualizacji = produkt.dataAktualizacji || 'Brak daty';
                     const marka = produkt.marka || 'Brak marki';
                     const sklep = produkt.sklep || 'Brak sklepu';
-                    const cenaPrzeliczeniowa = 'tba';
+                    
+                    // ZMODYFIKOWANE: Obliczanie ceny jednostkowej (Zadanie 4)
+                    const cenaPrzeliczeniowa = obliczCeneJednostkowaDlaKarty(produkt);
+                    
                     const pogrupowanieTekst = produkt.pogrupowanie ? `[${produkt.pogrupowanie}]` : '';
 
                     let cenaPromoHTML = '';
@@ -1016,6 +1158,7 @@
                         </div>
                         <div class="produkt-metadata">
                             <span>${dataAktualizacji}</span>
+                            <!-- ZMODYFIKOWANE: Wyświetlanie ceny przeliczeniowej -->
                             <span> ${cenaPrzeliczeniowa} <span class="cena-reg-kontener"> ${cenaStandardowa} zł</span> </span>
                         </div>
                         <div class="produkt-detale">
@@ -1076,23 +1219,26 @@
                 let zaktualizowaneCount = 0;
                 
                 importowaneProdukty.forEach(importowany => {
-                    const istniejacyIndeks = bazaProduktow.findIndex(p => p.ean === importowany.ean);
+                    // Logika łączenia: EAN + Sklep jest unikalnym kluczem
+                    const istniejacyIndeks = bazaProduktow.findIndex(p => p.ean === importowany.ean && p.sklep === importowany.sklep);
                     
                     if (istniejacyIndeks > -1) {
                         const istniejacy = bazaProduktow[istniejacyIndeks];
                         const dataIstniejaca = parseDate(istniejacy.dataAktualizacji);
                         const dataImportowana = parseDate(importowany.dataAktualizacji);
                         
+                        // Aktualizuj tylko, jeśli importowany ma nowszą datę
                         if (dataImportowana > dataIstniejaca) {
                             bazaProduktow[istniejacyIndeks] = importowany;
                             zaktualizowaneCount++;
                         } 
                     } else {
+                        // Dodaj jako nowy, jeśli nie ma pary EAN + Sklep
                         bazaProduktow.push(importowany);
                         dodaneCount++;
                     }
                 });
-                pokazKomunikat(`Scalanie zakończone. Dodano: ${dodaneCount}, Zaktualizowano: ${zaktualizowaneCount}.`, 'sukces');
+                pokazKomunikat(`Scalanie zakończone. Dodano: ${dodaneCount}, Zaktualizowano (nowsza data): ${zaktualizowaneCount}.`, 'sukces');
             };
 
             const obsluzImportPliku = (event) => {
@@ -1102,7 +1248,7 @@
                     return;
                 }
                 
-                const trybLaczenia = window.confirm('Wybierz tryb importu:\n\nOK: Połącz obecne dane z importowanymi (dodaj nowe EANy, zaktualizuj te z nowszą datą).\nAnuluj: Całkowicie nadpisz obecną bazę (UTRATA DANYCH).');
+                const trybLaczenia = window.confirm('Wybierz tryb importu:\n\nOK: Połącz obecne dane z importowanymi (klucz: EAN + Sklep, zaktualizuj te z nowszą datą).\nAnuluj: Całkowicie nadpisz obecną bazę (UTRATA DANYCH).');
                 
                 const reader = new FileReader();
                 reader.onload = (e) => {
@@ -1141,18 +1287,33 @@
                     throw new Error('Plik CSV jest pusty.');
                 }
                 
+                // Użyj zdefiniowanych nagłówków, a nie tych z pliku
                 const naglowkiDoUzycia = KOLUMNY_CSV; 
                 
+                // Sprawdź nagłówki z pliku (dla pewności)
+                 const naglowkiPliku = linie[0].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(v => v.trim().replace(/"/g, ''));
+                
+                // Proste sprawdzenie, czy pierwszy nagłówek to 'ean'. Jeśli nie, może to być zły format.
+                 if (naglowkiPliku[0].toLowerCase() !== 'ean') {
+                     console.warn("Nagłówek pliku CSV nie zaczyna się od 'ean'. Importowanie może się nie udać.");
+                 }
+
                 const nowaBaza = [];
 
                 for (let i = 1; i < linie.length; i++) {
                     const wartosci = linie[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(v => v.trim().replace(/"/g, ''));
                     
+                    // Jeśli wiersz ma mniej kolumn niż oczekiwano, pomiń
                     if (wartosci.length < naglowkiDoUzycia.length) continue; 
                     
                     const produkt = {};
                     for (let j = 0; j < naglowkiDoUzycia.length; j++) {
-                        produkt[naglowkiDoUzycia[j]] = wartosci[j];
+                        // Przypisz wartość do klucza z naglowkiDoUzycia
+                        if(j < wartosci.length) {
+                           produkt[naglowkiDoUzycia[j]] = wartosci[j];
+                        } else {
+                           produkt[naglowkiDoUzycia[j]] = ''; // Wypełnij puste, jeśli wiersz był krótszy
+                        }
                     }
                     
                     if (produkt.ean && produkt.nazwa) { 
@@ -1326,7 +1487,7 @@
                 const waga = parseFloat(gramaturaInput.value);
                 const jednostka = rodzajGramaturyInput.value;
 
-                if (!cena || isNaN(cena) || !waga || isNaN(waga) || !jednostka) {
+                if (!cena || isNaN(cena) || !waga || isNaN(waga) || !jednostka || waga === 0) {
                     cenaJednostkowaDisplay.textContent = "- /-";
                     return;
                 }
@@ -1334,15 +1495,20 @@
                 let wynik = 0;
                 let jednostkaWynikowa = "";
 
-                // Logika przeliczania zgodnie z prośbą
+                // Logika przeliczania
                 if (jednostka === 'g' || jednostka === 'ml') {
-                    // Cena / Gramatura * 100
                     wynik = (cena / waga) * 100;
                     jednostkaWynikowa = (jednostka === 'g') ? '100g' : '100ml';
+                } else if (jednostka === 'kg' || jednostka === 'l' || jednostka === 'm') {
+                     wynik = cena / waga;
+                     jednostkaWynikowa = jednostka;
+                } else if (jednostka === 'szt' && waga > 1) {
+                     wynik = cena / waga;
+                     jednostkaWynikowa = 'szt';
                 } else {
-                    // Cena / Gramatura (dla kg, l, m, szt)
-                    wynik = cena / waga;
-                    jednostkaWynikowa = jednostka;
+                    // Domyślnie (dla 1 szt) nie pokazuj
+                    cenaJednostkowaDisplay.textContent = "- /-";
+                    return;
                 }
 
                 cenaJednostkowaDisplay.textContent = `${wynik.toFixed(2)} /${jednostkaWynikowa}`;
@@ -1351,20 +1517,31 @@
 
             // --- INICJALIZACJA I OBSŁUGA ZDARZEŃ ---
             
-            btnZapisz.addEventListener('click', zapiszProdukt); 
+            // ZMODYFIKOWANE: Przypisanie nowych/zmienionych funkcji do przycisków
+            btnDodaj.addEventListener('click', dodajProdukt); 
+            btnZapiszWspolne.addEventListener('click', zapiszDaneWspolne); 
+            
             btnUsun.addEventListener('click', usunProdukt);
             btnEksport.addEventListener('click', eksportujCSV);
             btnImport.addEventListener('click', () => inputImport.click()); 
             inputImport.addEventListener('change', obsluzImportPliku); 
             btnWyczyscBaze.addEventListener('click', wyczyscCalaBaze);
             
-            if (btnFiltrPogrupowanie) {
-                btnFiltrPogrupowanie.addEventListener('click', () => {
-                    filtrPogrupowanieAktywny = !filtrPogrupowanieAktywny;
-                    wyswietlListe(); 
-                });
-            }
+            // ZMODYFIKOWANE: Logika przycisku filtra (Zadanie 4)
+            btnFiltr.addEventListener('click', () => {
+                if (stanFiltru === 'wszystko') {
+                    stanFiltru = 'ean';
+                } else if (stanFiltru === 'ean') {
+                    stanFiltru = 'nazwa';
+                } else if (stanFiltru === 'nazwa') {
+                    stanFiltru = 'grupa';
+                } else if (stanFiltru === 'grupa') {
+                    stanFiltru = 'wszystko';
+                }
+                wyswietlListe(); // Odśwież listę po zmianie filtra
+            });
 
+            // ZMODYFIKOWANE: Przycisk skanowania używa teraz `zapiszISkanujNowy`
             btnSkanujZapisz.addEventListener('click', zapiszISkanujNowy);
             
             btnSkanujPowiazany.addEventListener('click', () => startSkaner('powiazany')); 
